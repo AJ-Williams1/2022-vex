@@ -11,6 +11,7 @@ using namespace pros;
 void initialize()
 {
     lcd::initialize();
+    Motor fly1(10, E_MOTOR_GEARSET_18, false, MOTOR_ENCODER_ROTATIONS);
 }
 
 /**
