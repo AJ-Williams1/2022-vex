@@ -11,40 +11,41 @@ void opcontrol()
     Controller master(E_CONTROLLER_MASTER);
     Motor fly1(10);
 
-    /* Time variables */
-    steady_clock::time_point start_time = steady_clock::now();
-    milliseconds duration_from_start; // The duration object for the time elapsed
-    long long ms_from_start = 0;      // The number of milliseconds elapsed
-
     /* Diagnostic Variables */
     double real_vel = 0;
     int32_t real_voltage = 0;
     int32_t real_current = 0;
-    double real_power = 0;
+    double torque_vel_power = 0;
+    double amps_volts_power = 0;
     double real_temp = 0;
     double real_torque = 0;
 
     /* Print headers for daignostic variables */
-    printf("time (ms), velocity (RPM), voltage (mV), current(mA), power (W), temperature (deg C), torque (Nm)\n");
+    printf("time (ms), velocity (RPM), voltage (mV), current(mA), torque*vel power (W), current*volts power (W), "
+           "temperature (deg C), torque (Nm)\n");
 
     fly1.move(100);
+
+    /* Time variables */
+    int start_time = millis();
+    int elapsed_time = 0;
 
     while (true)
     {
         /* Time */
-        duration_from_start = duration_cast<milliseconds>(steady_clock::now() - start_time);
-        ms_from_start = duration_from_start.count();
+        elapsed_time = millis() - start_time;
 
         /* Motor stats */
         real_vel = fly1.get_actual_velocity();
         real_voltage = fly1.get_voltage();
         real_current = fly1.get_current_draw();
-        real_power = fly1.get_power();
+        torque_vel_power = fly1.get_power();
+        amps_volts_power = (real_voltage / 1000) * (real_current / 1000);
         real_temp = fly1.get_temperature();
         real_torque = fly1.get_torque();
 
-        printf("%lld, %f, %i, %i, %f, %f, %f\n", ms_from_start, real_vel, real_voltage, real_current, real_power,
-               real_temp, real_torque);
+        printf("%d, %f, %i, %i, %f, %f, %f, %f\n", elapsed_time, real_vel, real_voltage, real_current, torque_vel_power,
+               amps_volts_power, real_temp, real_torque);
 
         /* Actual stuff */
         delay(20);
