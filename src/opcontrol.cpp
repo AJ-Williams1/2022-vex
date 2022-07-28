@@ -7,7 +7,8 @@ void opcontrol()
 {
     /* SETUP DEVICES */
     Controller master(E_CONTROLLER_MASTER);
-    Motor fly1(10);
+    Motor fly1(13);
+    Motor fly2(14);
 
     /* Diagnostic Variables */
     double real_vel = 0;
@@ -19,33 +20,35 @@ void opcontrol()
     double real_torque = 0;
 
     /* Print headers for daignostic variables */
-    printf("time (ms), velocity (RPM), voltage (mV), current(mA), torque*vel power (W), current*volts power (W), "
-           "temperature (deg C), torque (Nm)\n");
+    printf("time (ms),velocity (RPM),voltage (mV),current (mA),torque*vel power (W),current*volts power (W),"
+           "temperature (deg C),torque (Nm)\n");
 
-    fly1.move(100);
+    fly1.move(-127);
+    fly2.move(-127);
+    // 7 + 7/16 in compression
 
     /* Time variables */
     int start_time = millis();
-    int elapsed_time = 0;
+    double elapsed_time = 0;
 
     while (true)
     {
         /* Time */
-        elapsed_time = millis() - start_time;
+        elapsed_time = (millis() - start_time) / 1000.0;
 
         /* Motor stats */
         real_vel = fly1.get_actual_velocity();
         real_voltage = fly1.get_voltage();
         real_current = fly1.get_current_draw();
         torque_vel_power = fly1.get_power();
-        amps_volts_power = (real_voltage / 1000) * (real_current / 1000);
+        amps_volts_power = (real_voltage * real_current) / 1000000.0;
         real_temp = fly1.get_temperature();
         real_torque = fly1.get_torque();
 
-        printf("%d, %f, %i, %i, %f, %f, %f, %f\n", elapsed_time, real_vel, real_voltage, real_current, torque_vel_power,
-               amps_volts_power, real_temp, real_torque);
+        printf("%.2f, %.3f, %i, %i, %.3f, %.3f, %.3f, %.3f\n", elapsed_time, real_vel, real_voltage, real_current,
+               torque_vel_power, amps_volts_power, real_temp, real_torque);
 
         /* Actual stuff */
-        delay(20);
+        delay(50);
     }
 }
