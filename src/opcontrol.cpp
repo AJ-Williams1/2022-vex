@@ -10,6 +10,13 @@ void opcontrol()
     Motor fly1(13);
     Motor fly2(14);
 
+    Motor drive_fr(WHEEL_FR_PORT);
+    Motor drive_fl(WHEEL_FL_PORT);
+    Motor drive_br(WHEEL_BR_PORT);
+    Motor drive_bl(WHEEL_BL_PORT);
+
+    Motor intake(INTAKE_MOTOR);
+
     /* Diagnostic Variables */
     double real_vel = 0;
     int32_t real_voltage = 0;
