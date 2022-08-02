@@ -1,5 +1,8 @@
 #include "main.h"
-#include "ports.h"
+
+// MOTOR PORTS
+#define FLY1_PORT 13
+#define FLY2_PORT 14
 
 using namespace pros;
 
@@ -12,18 +15,8 @@ using namespace pros;
 void initialize()
 {
     lcd::initialize();
-    // Flywheels
     Motor fly1(FLY1_PORT, E_MOTOR_GEARSET_06, false, MOTOR_ENCODER_ROTATIONS);
     Motor fly2(FLY2_PORT, E_MOTOR_GEARSET_06, false, MOTOR_ENCODER_ROTATIONS);
-
-    // Drive motors
-    Motor drive_fr(WHEEL_FR_PORT, E_MOTOR_GEARSET_18, true, MOTOR_ENCODER_ROTATIONS);
-    Motor drive_fl(WHEEL_FL_PORT, E_MOTOR_GEARSET_18, false, MOTOR_ENCODER_ROTATIONS);
-    Motor drive_br(WHEEL_BR_PORT, E_MOTOR_GEARSET_18, true, MOTOR_ENCODER_ROTATIONS);
-    Motor drive_bl(WHEEL_BL_PORT, E_MOTOR_GEARSET_18, false, MOTOR_ENCODER_ROTATIONS);
-
-    // Intake motor
-    Motor intake(INTAKE_MOTOR, E_MOTOR_GEARSET_36, true, MOTOR_ENCODER_ROTATIONS);
 }
 
 /**
