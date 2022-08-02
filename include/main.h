@@ -12,18 +12,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-// MOTOR PORTS -----------
-#define FLY1_PORT 14
-#define FLY2_PORT 15
-
-#define WHEEL_FR_PORT 10
-#define WHEEL_FL_PORT 11
-#define WHEEL_BR_PORT 12
-#define WHEEL_BL_PORT 13
-
-#define INTAKE_MOTOR 8
-//-------------------------
-
 #ifndef _PROS_MAIN_H_
 #define _PROS_MAIN_H_
 

@@ -1,22 +1,24 @@
 #include "main.h"
+#include "ports.h"
 
 using namespace pros;
+
+/* SETUP DEVICES */
+Controller control(E_CONTROLLER_MASTER);
+
+Motor fly1(FLY1_PORT);
+Motor fly2(FLY2_PORT);
+
+Motor drive_fr(WHEEL_FR_PORT);
+Motor drive_fl(WHEEL_FL_PORT);
+Motor drive_br(WHEEL_BR_PORT);
+Motor drive_bl(WHEEL_BL_PORT);
+
+Motor intake(INTAKE_MOTOR);
 
 /* In its own task when using FMS or Comp Switch, otherwise runs after init */
 void opcontrol()
 {
-    /* SETUP DEVICES */
-    Controller main(E_CONTROLLER_MASTER);
-    Motor fly1(13);
-    Motor fly2(14);
-
-    Motor drive_fr(WHEEL_FR_PORT);
-    Motor drive_fl(WHEEL_FL_PORT);
-    Motor drive_br(WHEEL_BR_PORT);
-    Motor drive_bl(WHEEL_BL_PORT);
-
-    Motor intake(INTAKE_MOTOR);
-
     // Joystick variables
     int32_t joy_l_x = 0;
     int32_t joy_l_y = 0;
@@ -28,27 +30,21 @@ void opcontrol()
 
     while (true)
     {
-        /* Actual stuff */
-
         // Intake
-        if (main.get_digital(E_CONTROLLER_DIGITAL_A))
-            intake.move(50);
+        if (control.get_digital(E_CONTROLLER_DIGITAL_A))
+            intake.move(127);
+        else
+            intake.brake();
 
-        /* Drive */
-        joy_l_x = main.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
-        joy_l_y = main.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
-        joy_r_x = main.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
-        joy_r_y = main.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
+        // Drive
+        joy_l_x = control.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
+        joy_l_y = control.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
+        joy_r_x = control.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
+        joy_r_y = control.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
 
-        // Cap the value
-        if (joy_l_y + joy_r_x > 127)
-            l_drive_speed = 127;
-        if (joy_l_y + joy_r_x < -127)
-            l_drive_speed = -127;
-        if (joy_l_y - joy_r_x > 127)
-            r_drive_speed = 127;
-        if (joy_l_y - joy_r_x < -127)
-            r_drive_speed = -127;
+        // Arcade style
+        l_drive_speed = joy_l_y + joy_r_x;
+        r_drive_speed = joy_l_y - joy_r_x;
 
         // Move motors
         drive_fr.move(r_drive_speed);
