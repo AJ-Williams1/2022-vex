@@ -3,6 +3,47 @@
 
 using namespace pros;
 
+void flywheel_on_fn(void *raw_speed)
+{
+    while (Task::notify_take(true, TIMEOUT_MAX))
+        ;
+
+    Motor fly(FLY_PORT);
+
+    // Get the actual speed
+    // (Casts the generic pointer to an int pointer that can be dereferenced, and then dereferences that pointer)
+    int32_t speed = *(int *)raw_speed;
+
+    // Cap the value
+    speed = (speed <= 127) ? speed : 127;
+
+    if (fly.is_stopped())
+    {
+        for (int i = 0; i <= speed; i++)
+        {
+            fly.move(i);
+            delay(10);
+        }
+    }
+}
+
+void flywheel_off_fn()
+{
+    while (Task::notify_take(true, TIMEOUT_MAX))
+        ;
+
+    Motor fly(FLY_PORT);
+
+    if (!fly.is_stopped())
+    {
+        for (int i = 127; i >= 0; i--)
+        {
+            fly.move(i);
+            delay(10);
+        }
+    }
+}
+
 /* In its own task when using FMS or Comp Switch, otherwise runs after init */
 void opcontrol()
 {
@@ -27,14 +68,40 @@ void opcontrol()
     int32_t l_drive_speed = 0;
     int32_t r_drive_speed = 0;
 
+    int8_t btn_state = -1;
+
+    Task flywheel_on(flywheel_on_fn, (void *)127, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Turn Flywheel On");
+    Task flywheel_off(flywheel_off_fn);
+
+    flywheel_on.remove();
+    flywheel_off.remove();
+
     while (true)
     {
         // Flywheel
-        fly.move(127);
+        if (ctrl.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
+        {
+            if (flywheel_on.get_state() != E_TASK_STATE_RUNNING)
+            {
+                Task flywheel_on(flywheel_on_fn, (void *)127, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT,
+                                 "Turn Flywheel On");
+                flywheel_on.notify();
+            }
+        }
+        else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
+        {
+            if (flywheel_off.get_state() != E_TASK_STATE_RUNNING)
+            {
+                Task flywheel_off(flywheel_off_fn);
+                flywheel_off.notify();
+            }
+        }
 
         // Intake
-        if (ctrl.get_digital(E_CONTROLLER_DIGITAL_A))
+        if (ctrl.get_digital(E_CONTROLLER_DIGITAL_R1))
             intake.move(127);
+        else if (ctrl.get_digital(E_CONTROLLER_DIGITAL_R2))
+            intake.move(-127);
         else
             intake.brake();
 
@@ -64,6 +131,6 @@ void opcontrol()
         drive_fl.move(l_drive_speed);
         drive_bl.move(l_drive_speed);
 
-        delay(20);
+        delay(10);
     }
 }

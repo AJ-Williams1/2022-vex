@@ -9,12 +9,13 @@ using namespace pros;
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
+
 void initialize()
 {
     lcd::initialize();
 
     // Flywheels
-    Motor fly(FLY_PORT, E_MOTOR_GEARSET_06, false, E_MOTOR_ENCODER_COUNTS);
+    Motor fly(FLY_PORT, E_MOTOR_GEARSET_06, true, E_MOTOR_ENCODER_COUNTS);
 
     // Drive motors
     Motor drive_fr(WHEEL_FR_PORT, E_MOTOR_GEARSET_18, true, MOTOR_ENCODER_ROTATIONS);
