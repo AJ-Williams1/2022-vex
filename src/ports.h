@@ -6,6 +6,8 @@
 
 #define INTAKE_PORT 19
 
-#define FLY_PORT 2
-//-------------------------
+#define FLY1_PORT 2
+#define FLY2_PORT 3
 
+#define INDEX_PORT 1
+//-------------------------

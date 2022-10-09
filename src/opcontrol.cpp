@@ -1,48 +1,8 @@
+#include "flywheel.h"
 #include "main.h"
 #include "ports.h"
 
 using namespace pros;
-
-void flywheel_on_fn(void *raw_speed)
-{
-    while (Task::notify_take(true, TIMEOUT_MAX))
-        ;
-
-    Motor fly(FLY_PORT);
-
-    // Get the actual speed
-    // (Casts the generic pointer to an int pointer that can be dereferenced, and then dereferences that pointer)
-    int32_t speed = *(int *)raw_speed;
-
-    // Cap the value
-    speed = (speed <= 127) ? speed : 127;
-
-    if (fly.is_stopped())
-    {
-        for (int i = 0; i <= speed; i++)
-        {
-            fly.move(i);
-            delay(10);
-        }
-    }
-}
-
-void flywheel_off_fn()
-{
-    while (Task::notify_take(true, TIMEOUT_MAX))
-        ;
-
-    Motor fly(FLY_PORT);
-
-    if (!fly.is_stopped())
-    {
-        for (int i = 127; i >= 0; i--)
-        {
-            fly.move(i);
-            delay(10);
-        }
-    }
-}
 
 /* In its own task when using FMS or Comp Switch, otherwise runs after init */
 void opcontrol()
@@ -57,7 +17,10 @@ void opcontrol()
 
     Motor intake(INTAKE_PORT);
 
-    Motor fly(FLY_PORT);
+    Motor fly1(FLY1_PORT);
+    Motor fly2(FLY2_PORT);
+
+    ADIDigitalOut indexer(INDEX_PORT);
 
     // Joystick variables
     int32_t joy_l_x = 0;
@@ -68,34 +31,51 @@ void opcontrol()
     int32_t l_drive_speed = 0;
     int32_t r_drive_speed = 0;
 
-    int8_t btn_state = -1;
-
-    Task flywheel_on(flywheel_on_fn, (void *)127, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Turn Flywheel On");
+    // Start and end both flywheel tasks, so that I can check if they're running later
+    Task flywheel_on(flywheel_on_fn, (void *)12000, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT,
+                     "Turn Flywheel On");
     Task flywheel_off(flywheel_off_fn);
 
     flywheel_on.remove();
     flywheel_off.remove();
 
+    indexer.set_value(true);
+
     while (true)
     {
+
         // Flywheel
-        if (ctrl.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
+        if (ctrl.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
         {
+            // Run the flywheel_on task only if it's not already running, and kill the flywheel_off task
             if (flywheel_on.get_state() != E_TASK_STATE_RUNNING)
             {
-                Task flywheel_on(flywheel_on_fn, (void *)127, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT,
+                // All this pointer nonsense is unfortunately necessary
+                int *fly_power_p = (int *)malloc(sizeof(int));
+                *fly_power_p = 12000;
+                Task flywheel_on(flywheel_on_fn, (void *)fly_power_p, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT,
                                  "Turn Flywheel On");
-                flywheel_on.notify();
+                if (flywheel_off.get_state() == E_TASK_STATE_RUNNING)
+                    flywheel_off.remove();
             }
         }
-        else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
+        else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_L2))
         {
+            // Same as above, but for flywheel_off
             if (flywheel_off.get_state() != E_TASK_STATE_RUNNING)
             {
                 Task flywheel_off(flywheel_off_fn);
+
+                if (flywheel_on.get_state() == E_TASK_STATE_RUNNING)
+                    flywheel_on.remove();
+
                 flywheel_off.notify();
             }
         }
+
+        // Indexer
+        if (ctrl.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
+            index_disc();
 
         // Intake
         if (ctrl.get_digital(E_CONTROLLER_DIGITAL_R1))
@@ -124,6 +104,13 @@ void opcontrol()
             r_drive_speed = 127;
         if (joy_l_y - joy_r_x < -127)
             r_drive_speed = -127;
+
+        // If intake is running, drive forward, otherwise backwards
+        if (!ctrl.get_digital(E_CONTROLLER_DIGITAL_R1))
+        {
+            l_drive_speed *= -1;
+            r_drive_speed *= -1;
+        }
 
         // Move motors
         drive_fr.move(r_drive_speed);

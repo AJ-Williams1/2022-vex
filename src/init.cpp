@@ -15,7 +15,8 @@ void initialize()
     lcd::initialize();
 
     // Flywheels
-    Motor fly(FLY_PORT, E_MOTOR_GEARSET_06, true, E_MOTOR_ENCODER_COUNTS);
+    Motor fly1(FLY1_PORT, E_MOTOR_GEARSET_06, true, E_MOTOR_ENCODER_COUNTS);
+    Motor fly2(FLY2_PORT, E_MOTOR_GEARSET_06, false, E_MOTOR_ENCODER_COUNTS);
 
     // Drive motors
     Motor drive_fr(WHEEL_FR_PORT, E_MOTOR_GEARSET_18, true, MOTOR_ENCODER_ROTATIONS);
@@ -25,6 +26,9 @@ void initialize()
 
     // Intake motor
     Motor intake(INTAKE_PORT, E_MOTOR_GEARSET_36, true, MOTOR_ENCODER_ROTATIONS);
+
+    ADIDigitalOut indexer(INDEX_PORT);
+    indexer.set_value(false);
 }
 
 /**
