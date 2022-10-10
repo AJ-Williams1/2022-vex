@@ -10,4 +10,6 @@
 #define FLY2_PORT 3
 
 #define INDEX_PORT 1
+
+#define COLORWHEEL_PORT 5
 //-------------------------

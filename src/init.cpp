@@ -27,6 +27,9 @@ void initialize()
     // Intake motor
     Motor intake(INTAKE_PORT, E_MOTOR_GEARSET_36, true, MOTOR_ENCODER_ROTATIONS);
 
+    // Colorwheel motor
+    Motor colorwheel(COLORWHEEL_PORT, E_MOTOR_GEARSET_36, false, MOTOR_ENCODER_ROTATIONS);
+
     ADIDigitalOut indexer(INDEX_PORT);
     indexer.set_value(false);
 }

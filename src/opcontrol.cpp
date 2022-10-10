@@ -20,6 +20,8 @@ void opcontrol()
     Motor fly1(FLY1_PORT);
     Motor fly2(FLY2_PORT);
 
+    Motor colorwheel(COLORWHEEL_PORT);
+
     ADIDigitalOut indexer(INDEX_PORT);
 
     // Joystick variables
@@ -84,6 +86,12 @@ void opcontrol()
             intake.move(-127);
         else
             intake.brake();
+
+        // Color Wheel
+        if (ctrl.get_digital(E_CONTROLLER_DIGITAL_Y))
+            colorwheel.move(55);
+        else
+            colorwheel.brake();
 
         // Drive
         joy_l_x = ctrl.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
