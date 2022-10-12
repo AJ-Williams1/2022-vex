@@ -1,4 +1,3 @@
-#include "drive_helpers.h"
 #include "main.h"
 #include "ports.h"
 
@@ -20,5 +19,5 @@ using namespace pros;
 
 void autonomous()
 {
-    drive_dist(12, 50);
+    //    drive_dist(12, 50);
 }

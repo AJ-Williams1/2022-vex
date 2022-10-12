@@ -33,49 +33,28 @@ void opcontrol()
     int32_t l_drive_speed = 0;
     int32_t r_drive_speed = 0;
 
-    int32_t temp_drive_speed = 0;
-
     // Start and end both flywheel tasks, so that I can check if they're running later
-    Task flywheel_on(flywheel_on_fn, (void *)12000, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT,
-                     "Turn Flywheel On");
-    Task flywheel_off(flywheel_off_fn);
-
-    flywheel_on.remove();
-    flywheel_off.remove();
+    Task flywheel_on(flywheel_on_fn);
 
     indexer.set_value(true);
 
     while (true)
     {
-
         // Flywheel
         if (ctrl.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
-        {
-            // Run the flywheel_on task only if it's not already running, and kill the flywheel_off task
-            if (flywheel_on.get_state() != E_TASK_STATE_RUNNING)
-            {
-                // All this pointer nonsense is unfortunately necessary
-                int *fly_power_p = (int *)malloc(sizeof(int));
-                *fly_power_p = 12000;
-                Task flywheel_on(flywheel_on_fn, (void *)fly_power_p, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT,
-                                 "Turn Flywheel On");
-                if (flywheel_off.get_state() == E_TASK_STATE_RUNNING)
-                    flywheel_off.remove();
-            }
-        }
+            flywheel_speed = 100;
         else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_L2))
-        {
-            // Same as above, but for flywheel_off
-            if (flywheel_off.get_state() != E_TASK_STATE_RUNNING)
-            {
-                Task flywheel_off(flywheel_off_fn);
+            flywheel_speed = 0;
 
-                if (flywheel_on.get_state() == E_TASK_STATE_RUNNING)
-                    flywheel_on.remove();
+        else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_UP))
+            flywheel_speed += 5;
+        else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN))
+            flywheel_speed -= 5;
 
-                flywheel_off.notify();
-            }
-        }
+        else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_RIGHT))
+            flywheel_speed += 20;
+        else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_LEFT))
+            flywheel_speed -= 20;
 
         // Indexer
         if (ctrl.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
@@ -118,9 +97,9 @@ void opcontrol()
         // If intake is running, drive forward, otherwise backwards
         if (!ctrl.get_digital(E_CONTROLLER_DIGITAL_R1))
         {
-            temp_drive_speed = r_drive_speed;
-            r_drive_speed = -1 * l_drive_speed;
-            l_drive_speed = -1 * temp_drive_speed;
+            r_drive_speed = r_drive_speed + l_drive_speed;
+            l_drive_speed = -1 * (r_drive_speed - l_drive_speed);
+            r_drive_speed = -1 * (r_drive_speed - l_drive_speed);
         }
 
         // Move motors

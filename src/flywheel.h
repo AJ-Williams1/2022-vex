@@ -3,10 +3,15 @@
 
 using namespace pros;
 
-void flywheel_on_fn(void *fly_power_p)
+float flywheel_speed = 0;
+
+void flywheel_on_fn()
 {
     Motor fly1(FLY1_PORT);
     Motor fly2(FLY2_PORT);
+    Controller ctrl(E_CONTROLLER_MASTER);
+
+    float target = 0;
 
     /* Diagnostic Variables */
     int start_time = millis();
@@ -20,50 +25,74 @@ void flywheel_on_fn(void *fly_power_p)
     double real_torque = 0;
 
     /* Print headers for daignostic variables */
-    printf("time (ms),velocity (RPM),voltage (mV),current (mA),torque*vel power (W),current*volts power (W),"
-           "temperature (deg C),torque (Nm)\n");
+    // printf(
+    //"time (ms),target (RPM),velocity (RPM),voltage (mV),current (mA),torque*vel power (W),current*volts power (W),"
+    //"temperature (deg C),torque (Nm)\n");
 
     // Get the actual speed
     // (Casts the generic pointer to an int pointer that can be dereferenced, and then dereferences that pointer)
-    int speed = *((int *)fly_power_p);
 
-    // Cap the value
-    speed = (speed <= 12000) ? speed : 12000;
+    target = 150;
 
-    // Ramp up
-    for (int i = fly1.get_voltage(); i <= speed; i += 50)
+    float fly1_error = 0;
+    float fly2_error = 0;
+
+    float fly1_vel = fly1.get_actual_velocity();
+    float fly2_vel = fly2.get_actual_velocity();
+
+    int fly1_voltage = 0;
+    int fly2_voltage = 0;
+    int ticks = 0;
+
+    float kP = 0.003;
+    float kD = 0.003;
+
+    printf("ticks, fly1_vel, fly2_vel\n");
+
+    while (true)
     {
-        fly1.move_voltage(i);
-        fly2.move_voltage(i);
+        ctrl.set_text(0, 0,
+                      std::to_string((int)round(flywheel_speed)) + "  " +
+                          std::to_string((int)round((fly1_vel + fly2_vel) / 2)) + "     ");
 
-        /* DIAGNOSTICS */
-        elapsed_time = (millis() - start_time) / 1000.0;
+        // Get & cap target value
+        target = (flywheel_speed <= 200) ? flywheel_speed : 200;
 
-        real_vel = (fly1.get_actual_velocity() - fly2.get_actual_velocity()) / 2;
-        real_current = fly1.get_current_draw();
-        torque_vel_power = fly1.get_power();
-        amps_volts_power = (real_voltage * real_current) / 1000000.0;
-        real_temp = fly1.get_temperature();
-        real_torque = fly1.get_torque();
+        printf("fly1_vel: %.3f,  fly1_volts: %i, fly1_realvolts: %i\nfly2_vel: %.3f, fly2_volts: %i, fly2_realvolts: "
+               "%i\n\n",
+               fly1_vel, fly1_voltage, fly1.get_voltage(), fly2_vel, fly2_voltage, fly2.get_voltage());
 
-        printf("%.2f, %.3f, %i, %i, %.3f, %.3f, %.3f, %.3f\n", elapsed_time, real_vel, real_voltage, real_current,
-               torque_vel_power, amps_volts_power, real_temp, real_torque);
-        delay(10);
+        // ticks++;
+        // printf("%i,%.3f,%.3f\n", ticks, fly1_vel, fly2_vel);
+
+        fly1_vel = fly1.get_actual_velocity();
+        fly2_vel = fly2.get_actual_velocity();
+
+        fly1_error = target - fly1_vel;
+        fly2_error = target - fly2_vel;
+
+        fly1_voltage += round((fly1_error * 600.0 * kP));
+        fly2_voltage += round(fly2_error * 600.0 * kP);
+
+        fly1.move_voltage(fly1_voltage);
+        fly2.move_voltage(fly2_voltage);
+
+        delay(50);
     }
-}
+    /*
+    // Diagnostics
+    elapsed_time = (millis() - start_time) / 1000.0;
 
-void flywheel_off_fn()
-{
-    Motor fly1(FLY1_PORT);
-    Motor fly2(FLY2_PORT);
+    real_vel = (fly1.get_actual_velocity() - fly2.get_actual_velocity()) / 2;
+    real_current = fly1.get_current_draw();
+    torque_vel_power = fly1.get_power();
+    amps_volts_power = (real_voltage * real_current) / 1000000.0;
+    real_temp = fly1.get_temperature();
+    real_torque = fly1.get_torque();
 
-    // Ramp down from current speed
-    for (int i = fly1.get_voltage(); i >= 0; i -= 50)
-    {
-        fly1.move_voltage(i);
-        fly2.move_voltage(i);
-        delay(10);
-    }
+    printf("%.2f, %.3f, %i, %i, %.3f, %.3f, %.3f, %.3f\n", elapsed_time, real_vel, real_voltage, real_current,
+           torque_vel_power, amps_volts_power, real_temp, real_torque);
+    */
 }
 
 void index_disc()

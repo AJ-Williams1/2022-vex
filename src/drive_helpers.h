@@ -14,8 +14,7 @@ class drive
         Motor drive_br = _drive_br;
         Motor drive_bl = _drive_bl;
     }
-
-}
+};
 
 // Functions analagous to motor functions like move(), move_voltage, etc. but for all drive motors at once
 void drive_move_relative(float target, float vel)
