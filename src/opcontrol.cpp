@@ -33,6 +33,8 @@ void opcontrol()
     int32_t l_drive_speed = 0;
     int32_t r_drive_speed = 0;
 
+    int32_t temp_drive_speed = 0;
+
     // Start and end both flywheel tasks, so that I can check if they're running later
     Task flywheel_on(flywheel_on_fn, (void *)12000, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT,
                      "Turn Flywheel On");
@@ -116,8 +118,9 @@ void opcontrol()
         // If intake is running, drive forward, otherwise backwards
         if (!ctrl.get_digital(E_CONTROLLER_DIGITAL_R1))
         {
-            l_drive_speed *= -1;
-            r_drive_speed *= -1;
+            temp_drive_speed = r_drive_speed;
+            r_drive_speed = -1 * l_drive_speed;
+            l_drive_speed = -1 * temp_drive_speed;
         }
 
         // Move motors

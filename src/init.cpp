@@ -28,10 +28,13 @@ void initialize()
     Motor intake(INTAKE_PORT, E_MOTOR_GEARSET_36, true, MOTOR_ENCODER_ROTATIONS);
 
     // Colorwheel motor
-    Motor colorwheel(COLORWHEEL_PORT, E_MOTOR_GEARSET_36, false, MOTOR_ENCODER_ROTATIONS);
+    Motor colorwheel(COLORWHEEL_PORT, E_MOTOR_GEARSET_36, true, MOTOR_ENCODER_ROTATIONS);
 
     ADIDigitalOut indexer(INDEX_PORT);
-    indexer.set_value(false);
+    indexer.set_value(true);
+
+    Vision vis(VISION_PORT);
+    vis.set_wifi_mode(1);
 }
 
 /**

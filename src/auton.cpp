@@ -1,5 +1,8 @@
+#include "drive_helpers.h"
 #include "main.h"
 #include "ports.h"
+
+#define WHEEL_DIAMETER 4.0
 
 using namespace pros;
 
@@ -14,7 +17,8 @@ using namespace pros;
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
+
 void autonomous()
 {
+    drive_dist(12, 50);
 }
-
