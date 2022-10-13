@@ -33,6 +33,8 @@ void opcontrol()
     int32_t l_drive_speed = 0;
     int32_t r_drive_speed = 0;
 
+    bool drive_disabled = false;
+
     // Start and end both flywheel tasks, so that I can check if they're running later
     Task flywheel_on(flywheel_on_fn);
 
@@ -75,6 +77,14 @@ void opcontrol()
             colorwheel.brake();
 
         // Drive
+        if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
+        {
+            drive_disabled = !drive_disabled;
+        }
+
+        if (drive_disabled)
+            continue;
+
         joy_l_x = ctrl.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
         joy_l_y = ctrl.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
         joy_r_x = ctrl.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
@@ -98,8 +108,10 @@ void opcontrol()
         if (!ctrl.get_digital(E_CONTROLLER_DIGITAL_R1))
         {
             r_drive_speed = r_drive_speed + l_drive_speed;
-            l_drive_speed = -1 * (r_drive_speed - l_drive_speed);
-            r_drive_speed = -1 * (r_drive_speed - l_drive_speed);
+            l_drive_speed = (r_drive_speed - l_drive_speed);
+            r_drive_speed = (r_drive_speed - l_drive_speed);
+            l_drive_speed *= -1;
+            r_drive_speed *= -1;
         }
 
         // Move motors

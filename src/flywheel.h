@@ -32,8 +32,6 @@ void flywheel_on_fn()
     // Get the actual speed
     // (Casts the generic pointer to an int pointer that can be dereferenced, and then dereferences that pointer)
 
-    target = 150;
-
     float fly1_error = 0;
     float fly2_error = 0;
 
@@ -57,7 +55,6 @@ void flywheel_on_fn()
 
         // Get & cap target value
         target = (flywheel_speed <= 200) ? flywheel_speed : 200;
-
         printf("fly1_vel: %.3f,  fly1_volts: %i, fly1_realvolts: %i\nfly2_vel: %.3f, fly2_volts: %i, fly2_realvolts: "
                "%i\n\n",
                fly1_vel, fly1_voltage, fly1.get_voltage(), fly2_vel, fly2_voltage, fly2.get_voltage());

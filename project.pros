@@ -302,7 +302,7 @@
       }
     },
     "upload_options": {
-      "description": "WHEEL_FR 1, WHEEL_FL 17, WHEEL_BR 20, WHEEL_BL 18, INTAKE 19, FLY1 2, FLY2 3, INDEX 1, COLORWHEEL 5, ",
+      "description": "FR 14, FL 16, BR 13, BL 17, INTAKE 11, FLY1 19, FLY2 18, INDEX 8, COLORWHEEL 12, VISION 15",
       "icon": "ufo"
     },
     "project_name": "aj-code"
