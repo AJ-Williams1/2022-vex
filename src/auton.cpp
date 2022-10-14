@@ -1,6 +1,7 @@
 #include "main.h"
 #include "ports.h"
 #include "Drivetrain_main.h"
+#include "autoSelect/selection.h"
 
 using namespace pros;
 

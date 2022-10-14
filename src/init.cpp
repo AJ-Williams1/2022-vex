@@ -1,6 +1,7 @@
 #include "main.h"
 #include "ports.h"
 #include "Drivetrain_main.h"
+#include "autoSelect/selection.h"
 
 using namespace pros;
 
@@ -14,6 +15,7 @@ using namespace pros;
 void initialize()
 {
     lcd::initialize();
+    selector::init();
 
     // Flywheels
     Motor fly1(FLY1_PORT, E_MOTOR_GEARSET_18, true, E_MOTOR_ENCODER_COUNTS);
