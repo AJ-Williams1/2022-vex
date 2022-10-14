@@ -1,5 +1,6 @@
 #include "main.h"
 #include "ports.h"
+#include "Drivetrain_main.h"
 
 using namespace pros;
 

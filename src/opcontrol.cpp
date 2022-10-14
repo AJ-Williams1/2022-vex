@@ -1,6 +1,7 @@
 #include "flywheel.h"
 #include "main.h"
 #include "ports.h"
+#include "Drivetrain_main.h"
 
 using namespace pros;
 
@@ -10,10 +11,7 @@ void opcontrol()
     /* SETUP DEVICES */
     Controller ctrl(E_CONTROLLER_MASTER);
 
-    Motor drive_fr(WHEEL_FR_PORT);
-    Motor drive_fl(WHEEL_FL_PORT);
-    Motor drive_br(WHEEL_BR_PORT);
-    Motor drive_bl(WHEEL_BL_PORT);
+    Drivetrain drive;
 
     Motor intake(INTAKE_PORT);
 
@@ -72,7 +70,7 @@ void opcontrol()
 
         // Color Wheel
         if (ctrl.get_digital(E_CONTROLLER_DIGITAL_Y))
-            colorwheel.move(55);
+            colorwheel.move(127);
         else
             colorwheel.brake();
 
@@ -115,11 +113,7 @@ void opcontrol()
         }
 
         // Move motors
-        drive_fr.move(r_drive_speed);
-        drive_br.move(r_drive_speed);
-        drive_fl.move(l_drive_speed);
-        drive_bl.move(l_drive_speed);
-
-        delay(10);
+        drive.move(r_drive_speed);
+        delay(20);
     }
 }
