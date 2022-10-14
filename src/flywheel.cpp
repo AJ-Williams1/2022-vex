@@ -91,16 +91,3 @@ void flywheel_on_fn()
            torque_vel_power, amps_volts_power, real_temp, real_torque);
     */
 }
-
-void index_disc()
-{
-    ADIDigitalOut indexer(INDEX_PORT);
-    Motor intake(INTAKE_PORT);
-
-    intake.move(127);
-    indexer.set_value(false);
-    delay(250);
-    indexer.set_value(true);
-    delay(100);
-    intake.brake();
-}
