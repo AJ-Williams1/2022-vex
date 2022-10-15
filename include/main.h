@@ -62,6 +62,19 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+    /**
+     * Function & Variable Declarations
+     */
+    void autonomous(void);
+    void initialize(void);
+    void disabled(void);
+    void competition_initialize(void);
+    void opcontrol(void);
+
+    void flywheel_on_fn();
+    void index_disc();
+
+    extern float flywheel_speed;
 
 #ifdef __cplusplus
 }
@@ -75,18 +88,4 @@ extern "C" {
 #endif
 
 #endif  // _PROS_MAIN_H_
-
-/**
- * Function & Variable Declarations
- */
-void autonomous(void);
-void initialize(void);
-void disabled(void);
-void competition_initialize(void);
-void opcontrol(void);
-
-void flywheel_on_fn();
-void index_disc();
-
-extern float flywheel_speed;
 
