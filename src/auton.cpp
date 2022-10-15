@@ -39,6 +39,7 @@ void drive_circle(circle_radius_type_e radius_type, float radius, float outer_sp
 
 void auton()
 {
+    drive_dist(12, 50);
     drive_circle(INNER, 24, 80, 360, CLOCKWISE);
 }
 
