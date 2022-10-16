@@ -45,7 +45,7 @@ void flywheel_on_fn()
     float kP = 0.003;
     float kD = 0.003;
 
-    printf("ticks, fly1_vel, fly2_vel\n");
+    // printf("ticks, fly1_vel, fly2_vel\n");
 
     while (true)
     {
@@ -55,9 +55,10 @@ void flywheel_on_fn()
 
         // Get & cap target value
         target = (flywheel_speed <= 200) ? flywheel_speed : 200;
-        printf("fly1_vel: %.3f,  fly1_volts: %i, fly1_realvolts: %i\nfly2_vel: %.3f, fly2_volts: %i, fly2_realvolts: "
-               "%i\n\n",
-               fly1_vel, fly1_voltage, fly1.get_voltage(), fly2_vel, fly2_voltage, fly2.get_voltage());
+        // printf("fly1_vel: %.3f,  fly1_volts: %i, fly1_realvolts: %i\nfly2_vel: %.3f, fly2_volts: %i, fly2_realvolts:
+        // "
+        // "%i\n\n",
+        // fly1_vel, fly1_voltage, fly1.get_voltage(), fly2_vel, fly2_voltage, fly2.get_voltage());
 
         // ticks++;
         // printf("%i,%.3f,%.3f\n", ticks, fly1_vel, fly2_vel);
@@ -87,7 +88,7 @@ void flywheel_on_fn()
     real_temp = fly1.get_temperature();
     real_torque = fly1.get_torque();
 
-    printf("%.2f, %.3f, %i, %i, %.3f, %.3f, %.3f, %.3f\n", elapsed_time, real_vel, real_voltage, real_current,
-           torque_vel_power, amps_volts_power, real_temp, real_torque);
+    // printf("%.2f, %.3f, %i, %i, %.3f, %.3f, %.3f, %.3f\n", elapsed_time, real_vel, real_voltage, real_current,
+           //torque_vel_power, amps_volts_power, real_temp, real_torque);
     */
 }

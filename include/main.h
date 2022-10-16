@@ -73,6 +73,9 @@ extern "C" {
 
     void flywheel_on_fn();
     void index_disc();
+    void aim_horiz();
+
+    int abs(int num);
 
     extern float flywheel_speed;
 

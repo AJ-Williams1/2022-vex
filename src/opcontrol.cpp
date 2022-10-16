@@ -37,10 +37,16 @@ void opcontrol()
 
     indexer.set_value(true);
 
+    // autonomous();
+
+    // delay(10000000);
+
     while (true)
     {
+        // if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_B))
+        // aim_horiz();
         // Flywheel
-        if (ctrl.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
+        if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_L1))
             flywheel_speed = 100;
         else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_L2))
             flywheel_speed = 0;
@@ -74,6 +80,7 @@ void opcontrol()
             colorwheel.brake();
 
         // Drive
+        /*
         if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
         {
             drive_disabled = !drive_disabled;
@@ -81,6 +88,7 @@ void opcontrol()
 
         if (drive_disabled)
             continue;
+        */
 
         joy_l_x = ctrl.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
         joy_l_y = ctrl.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
@@ -112,7 +120,8 @@ void opcontrol()
         }
 
         // Move motors
-        drive.move(r_drive_speed);
+        drive.right.move(r_drive_speed);
+        drive.left.move(l_drive_speed);
         delay(20);
     }
 }

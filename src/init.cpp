@@ -15,7 +15,7 @@ using namespace pros;
 void initialize()
 {
     lcd::initialize();
-    selector::init();
+    // selector::init();
 
     // Flywheels
     Motor fly1(FLY1_PORT, E_MOTOR_GEARSET_18, true, E_MOTOR_ENCODER_COUNTS);
@@ -36,7 +36,7 @@ void initialize()
     ADIDigitalOut indexer(INDEX_PORT);
     indexer.set_value(true);
 
-    Vision vis(VISION_PORT);
+    Vision vis(VISION_PORT, E_VISION_ZERO_CENTER);
     vis.set_wifi_mode(1);
 }
 

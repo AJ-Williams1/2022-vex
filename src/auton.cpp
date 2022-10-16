@@ -1,7 +1,7 @@
-#include "main.h"
-#include "ports.h"
 #include "Drivetrain_main.h"
 #include "autoSelect/selection.h"
+#include "main.h"
+#include "ports.h"
 
 using namespace pros;
 
@@ -11,19 +11,30 @@ using namespace pros;
 #define WHEEL_TO_EDGE 2
 
 // Types
-typedef enum circle_radius_type_e {
+typedef enum circle_radius_type_e
+{
     INNER = -1,
     OUTER = 1,
 } circle_radius_type_e;
 
-typedef enum circle_direction_e {
+typedef enum front_side_e
+{
+    FLY = 1,
+    INTAKE = -1,
+} front_side_e;
+
+typedef enum circle_direction_e
+{
     CLOCKWISE = 1,
     COUNTERCLOCKWISE = -1,
 } circle_direction_e;
 
 // Function declarations
+void color_quick_spin();
 void drive_dist(float distance, float vel);
-void drive_circle(circle_radius_type_e radius_type, float radius, float outer_speed, float radians, circle_direction_e direction);
+void drive_circle(circle_radius_type_e radius_type, float radius, float outer_speed, float degrees,
+                  circle_direction_e direction, front_side_e front);
+void drive_time(int time, float vel);
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -37,13 +48,34 @@ void drive_circle(circle_radius_type_e radius_type, float radius, float outer_sp
  * from where it left off.
  */
 
-void auton()
+void autonomous()
 {
-    drive_dist(12, 50);
-    drive_circle(INNER, 24, 80, 360, CLOCKWISE);
+    drive_circle(INNER, 4, 80, 190, CLOCKWISE, FLY);
+    delay(4000);
+    drive_time(100, -80);
+    color_quick_spin();
 }
 
 // Helper functions
+
+void color_quick_spin()
+{
+    Motor colorwheel(COLORWHEEL_PORT);
+
+    colorwheel.move(127);
+    delay(250);
+    colorwheel.brake();
+}
+
+void drive_time(int time, float vel)
+{
+    Drivetrain drive;
+
+    drive.move(vel);
+    delay(time);
+    drive.brake();
+}
+
 void drive_dist(float distance, float vel)
 {
     Drivetrain drive;
@@ -52,7 +84,8 @@ void drive_dist(float distance, float vel)
     drive.move_relative(rotations, vel);
 }
 
-void drive_circle(circle_radius_type_e radius_type, float radius, float outer_speed, float degrees, circle_direction_e direction)
+void drive_circle(circle_radius_type_e radius_type, float radius, float outer_speed, float degrees,
+                  circle_direction_e direction, front_side_e front)
 {
     Drivetrain drive;
 
@@ -60,13 +93,14 @@ void drive_circle(circle_radius_type_e radius_type, float radius, float outer_sp
     float inner_radius = 0;
     float outer_radius = 0;
 
-    switch (radius_type)
+    if (radius_type == INNER)
     {
-    case INNER:
         inner_radius = radius + WHEEL_TO_EDGE;
         outer_radius = inner_radius + WHEELBASE_WIDTH;
+    }
 
-    case OUTER:
+    else if (radius_type == OUTER)
+    {
         outer_radius = radius - WHEEL_TO_EDGE;
         inner_radius = outer_radius - WHEELBASE_WIDTH;
     }
@@ -82,14 +116,23 @@ void drive_circle(circle_radius_type_e radius_type, float radius, float outer_sp
     float inner_rotations = inner_arc_length / (WHEEL_DIAMETER * M_PI);
     float outer_rotations = outer_arc_length / (WHEEL_DIAMETER * M_PI);
 
-    switch(direction)
+    // Reverse direction if you want to drive towards the flywheel
+    if (front == FLY)
     {
-        case CLOCKWISE:
-            drive.right.move_relative(inner_rotations, inner_speed);
-            drive.left.move_relative(outer_rotations, outer_speed);
+        inner_rotations = -inner_rotations;
+        outer_rotations = -outer_rotations;
+    }
 
-        case COUNTERCLOCKWISE:
-            drive.left.move_relative(inner_rotations, inner_speed);
-            drive.right.move_relative(outer_rotations, outer_speed);
+    // Select which side is inner or outer based on direction of rotation
+    if (direction == CLOCKWISE)
+    {
+        drive.right.move_relative(inner_rotations, inner_speed);
+        drive.left.move_relative(outer_rotations, outer_speed);
+    }
+
+    else if (direction == COUNTERCLOCKWISE)
+    {
+        drive.left.move_relative(inner_rotations, inner_speed);
+        drive.right.move_relative(outer_rotations, outer_speed);
     }
 }
