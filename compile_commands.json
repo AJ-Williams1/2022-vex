@@ -5,12 +5,12 @@
       "-c",
       "-target",
       "armv7ar-none-none-eabi",
-      "-isystem/home/aj/builds/arm-none-eapi/arm-gnu-toolchain-12.2.mpacbti-bet1-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.2.0/../../../../arm-none-eabi/include/c++/12.2.0",
-      "-isystem/home/aj/builds/arm-none-eapi/arm-gnu-toolchain-12.2.mpacbti-bet1-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.2.0/../../../../arm-none-eabi/include/c++/12.2.0/arm-none-eabi/thumb/v7-a+simd/softfp",
-      "-isystem/home/aj/builds/arm-none-eapi/arm-gnu-toolchain-12.2.mpacbti-bet1-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.2.0/../../../../arm-none-eabi/include/c++/12.2.0/backward",
-      "-isystem/home/aj/builds/arm-none-eapi/arm-gnu-toolchain-12.2.mpacbti-bet1-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.2.0/include",
-      "-isystem/home/aj/builds/arm-none-eapi/arm-gnu-toolchain-12.2.mpacbti-bet1-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.2.0/include-fixed",
-      "-isystem/home/aj/builds/arm-none-eapi/arm-gnu-toolchain-12.2.mpacbti-bet1-x86_64-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/12.2.0/../../../../arm-none-eabi/include",
+      "-isystem/usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/include/c++/9.2.1",
+      "-isystem/usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/include/c++/9.2.1/arm-none-eabi",
+      "-isystem/usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/include/c++/9.2.1/backward",
+      "-isystem/usr/lib/gcc/arm-none-eabi/9.2.1/include",
+      "-isystem/usr/lib/gcc/arm-none-eabi/9.2.1/include-fixed",
+      "-isystem/usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/include",
       "-iquote./include",
       "-iquote./include/okapi/squiggles",
       "-iquote./include/./",
@@ -31,7 +31,7 @@
       "bin/main.cpp.o",
       "src/main.cpp"
     ],
-    "directory": "/home/aj/code/vex/2022-vex",
+    "directory": "/home/aj/vexcode/2022-vex",
     "file": "src/Drivetrain.cpp"
   }
 ]
