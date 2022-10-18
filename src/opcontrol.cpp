@@ -1,16 +1,24 @@
 #include "main.h"
 #include "ports.h"
-#include "Drivetrain_main.h"
 
-using namespace pros;
+using namespace okapi;
 
 /* In its own task when using FMS or Comp Switch, otherwise runs after init */
 void opcontrol()
 {
     /* SETUP DEVICES */
-    Controller ctrl(E_CONTROLLER_MASTER);
+    Controller ctrl;
 
-    Drivetrain drive;
+    std::shared_ptr<ChassisController> drive =
+        ChassisControllerBuilder()
+            .withMotors({WHEEL_FL_PORT, WHEEL_BL_PORT}, {WHEEL_FR_PORT, WHEEL_BR_PORT})
+            .withDimensions(AbstractMotor::gearset::green, {{4_in, 11.5_in}, imev5GreenTPR})
+            .withGains({0.001, 0, 0.0001}, // Distance controller gains
+                       {0.001, 0, 0.0001}, // Turn controller gains
+                       {0.001, 0, 0.0001}  // Angle controller gains (helps drive straight)
+                       )
+            .withOdometry()
+            .buildOdometry();
 
     Motor intake(INTAKE_PORT);
 
@@ -19,7 +27,7 @@ void opcontrol()
 
     Motor colorwheel(COLORWHEEL_PORT);
 
-    ADIDigitalOut indexer(INDEX_PORT);
+    pros::ADIDigitalOut indexer(INDEX_PORT);
 
     // Joystick variables
     int32_t joy_l_x = 0;
@@ -33,7 +41,7 @@ void opcontrol()
     bool drive_disabled = false;
 
     // Start and end both flywheel tasks, so that I can check if they're running later
-    Task flywheel_on(flywheel_on_fn);
+    pros::Task flywheel_on(flywheel_on_fn);
 
     indexer.set_value(true);
 
@@ -43,45 +51,41 @@ void opcontrol()
 
     while (true)
     {
-        // if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_B))
-        // aim_horiz();
-        // Flywheel
-        if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_L1))
+        if (ctrl.operator[](ControllerDigital::L1).changedToPressed())
             flywheel_speed = 100;
-        else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_L2))
+        else if (ctrl.operator[](ControllerDigital::L2).changedToPressed())
             flywheel_speed = 0;
-
-        else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_UP))
+        else if (ctrl.operator[](ControllerDigital::up).changedToPressed())
             flywheel_speed += 5;
-        else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN))
+        else if (ctrl.operator[](ControllerDigital::down).changedToPressed())
             flywheel_speed -= 5;
 
-        else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_RIGHT))
+        else if (ctrl.operator[](ControllerDigital::right).changedToPressed())
             flywheel_speed += 20;
-        else if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_LEFT))
+        else if (ctrl.operator[](ControllerDigital::left).changedToPressed())
             flywheel_speed -= 20;
 
         // Indexer
-        if (ctrl.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
+        if (ctrl.operator[](ControllerDigital::A).changedToPressed())
             index_disc();
 
         // Intake
-        if (ctrl.get_digital(E_CONTROLLER_DIGITAL_R1))
-            intake.move(127);
-        else if (ctrl.get_digital(E_CONTROLLER_DIGITAL_R2))
-            intake.move(-127);
+        if (ctrl.getDigital(ControllerDigital::R1))
+            intake.moveVoltage(12000);
+        else if (ctrl.getDigital(ControllerDigital::R2))
+            intake.moveVoltage(-12000);
         else
-            intake.brake();
+            intake.moveVoltage(0);
 
         // Color Wheel
-        if (ctrl.get_digital(E_CONTROLLER_DIGITAL_Y))
-            colorwheel.move(127);
+        if (ctrl.getDigital(ControllerDigital::Y))
+            colorwheel.moveVoltage(12000);
         else
-            colorwheel.brake();
+            colorwheel.moveVoltage(0);
 
         // Drive
         /*
-        if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
+        if (ctrl.operator[](ControllerDigital::X))
         {
             drive_disabled = !drive_disabled;
         }
@@ -90,27 +94,25 @@ void opcontrol()
             continue;
         */
 
-        joy_l_x = ctrl.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
-        joy_l_y = ctrl.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
-        joy_r_x = ctrl.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
-        joy_r_y = ctrl.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
+        joy_l_y = ctrl.getAnalog(ControllerAnalog::leftY);
+        joy_r_x = ctrl.getAnalog(ControllerAnalog::rightX);
 
         // Arcade style
-        l_drive_speed = joy_l_y + joy_r_x;
-        r_drive_speed = joy_l_y - joy_r_x;
+        l_drive_speed = 200 * (joy_l_y + joy_r_x);
+        r_drive_speed = 200 * (joy_l_y - joy_r_x);
 
         // Cap the value
-        if (joy_l_y + joy_r_x > 127)
-            l_drive_speed = 127;
-        if (joy_l_y + joy_r_x < -127)
-            l_drive_speed = -127;
-        if (joy_l_y - joy_r_x > 127)
-            r_drive_speed = 127;
-        if (joy_l_y - joy_r_x < -127)
-            r_drive_speed = -127;
+        if (joy_l_y + joy_r_x > 200)
+            l_drive_speed = 200;
+        if (joy_l_y + joy_r_x < -200)
+            l_drive_speed = -200;
+        if (joy_l_y - joy_r_x > 200)
+            r_drive_speed = 200;
+        if (joy_l_y - joy_r_x < -200)
+            r_drive_speed = -200;
 
         // If intake is running, drive forward, otherwise backwards
-        if (!ctrl.get_digital(E_CONTROLLER_DIGITAL_R1))
+        if (!ctrl.getDigital(ControllerDigital::R1) && !ctrl.getDigital(ControllerDigital::R2))
         {
             r_drive_speed = r_drive_speed + l_drive_speed;
             l_drive_speed = (r_drive_speed - l_drive_speed);
@@ -120,8 +122,9 @@ void opcontrol()
         }
 
         // Move motors
-        drive.right.move(r_drive_speed);
-        drive.left.move(l_drive_speed);
-        delay(20);
+        drive->getModel()->left(l_drive_speed);
+        drive->getModel()->right(r_drive_speed);
+
+        pros::delay(10);
     }
 }

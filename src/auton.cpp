@@ -1,9 +1,8 @@
-#include "Drivetrain_main.h"
 #include "autoSelect/selection.h"
 #include "main.h"
 #include "ports.h"
 
-using namespace pros;
+using namespace okapi;
 
 // Constants
 #define WHEEL_DIAMETER 4.0
