@@ -1,3 +1,4 @@
+#include "chassis_setup.h"
 #include "main.h"
 #include "ports.h"
 
@@ -9,16 +10,6 @@ void opcontrol()
     /* SETUP DEVICES */
     Controller ctrl;
 
-    std::shared_ptr<ChassisController> drive =
-        ChassisControllerBuilder()
-            .withMotors({WHEEL_FL_PORT, WHEEL_BL_PORT}, {WHEEL_FR_PORT, WHEEL_BR_PORT})
-            .withDimensions(AbstractMotor::gearset::green, {{4_in, 11.5_in}, imev5GreenTPR})
-            .withGains({0.001, 0, 0.0001}, // Distance controller gains
-                       {0.001, 0, 0.0001}, // Turn controller gains
-                       {0.001, 0, 0.0001}  // Angle controller gains (helps drive straight)
-                       )
-            .withOdometry()
-            .buildOdometry();
 
     Motor intake(INTAKE_PORT);
 

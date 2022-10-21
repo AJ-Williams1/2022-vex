@@ -22,6 +22,7 @@
       "-D_POSIX_THREADS",
       "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
       "-Wno-psabi",
+      "-Wno-invalid-constexpr",
       "-ffunction-sections",
       "-fdata-sections",
       "-fdiagnostics-color",
