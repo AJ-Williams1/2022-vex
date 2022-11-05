@@ -20,6 +20,7 @@ void opcontrol()
     Motor colorwheel(COLORWHEEL_PORT);
 
     ADIDigitalOut indexer(INDEX_PORT);
+    ADIDigitalOut expand(EXPAND_PORT);
 
     // Joystick variables
     int32_t joy_l_x = 0;
@@ -36,6 +37,7 @@ void opcontrol()
     Task flywheel_on(flywheel_on_fn);
 
     indexer.set_value(true);
+    expand.set_value(false);
 
     // autonomous();
 
@@ -62,7 +64,7 @@ void opcontrol()
             flywheel_speed -= 20;
 
         // Indexer
-        if (ctrl.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
+        if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_A))
             index_disc();
 
         // Intake
@@ -79,16 +81,22 @@ void opcontrol()
         else
             colorwheel.brake();
 
-        // Drive
-        /*
-        if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
+        // Expansion
+        if (ctrl.get_digital(E_CONTROLLER_DIGITAL_X))
         {
-            drive_disabled = !drive_disabled;
+            expand.set_value(true);
         }
 
-        if (drive_disabled)
-            continue;
-        */
+            // Drive
+            /*
+            if (ctrl.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
+            {
+                drive_disabled = !drive_disabled;
+            }
+
+            if (drive_disabled)
+                continue;
+            */
 
         joy_l_x = ctrl.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
         joy_l_y = ctrl.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);

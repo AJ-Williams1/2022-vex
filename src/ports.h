@@ -10,6 +10,7 @@
 #define FLY2_PORT 18
 
 #define INDEX_PORT 8
+#define EXPAND_PORT 7
 
 #define COLORWHEEL_PORT 12
 

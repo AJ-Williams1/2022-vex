@@ -36,6 +36,8 @@ void initialize()
     ADIDigitalOut indexer(INDEX_PORT);
     indexer.set_value(true);
 
+    ADIDigitalOut expand(EXPAND_PORT);
+
     Vision vis(VISION_PORT, E_VISION_ZERO_CENTER);
     vis.set_wifi_mode(1);
 }
