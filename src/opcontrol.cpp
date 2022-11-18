@@ -49,10 +49,11 @@ void opcontrol()
             flywheel_speed += 20;
         else if (ctrl.operator[](ControllerDigital::left).changedToPressed())
             flywheel_speed -= 20;
+
         if (flyCtrl->getTarget() != flywheel_speed)
             flyCtrl->setTarget(flywheel_speed);
 
-        // printf("%f\n", flyCtrl->getProcessValue());
+        printf("%f\n", flyCtrl->getProcessValue());
 
         // Indexer
         if (ctrl.operator[](ControllerDigital::A).changedToPressed())

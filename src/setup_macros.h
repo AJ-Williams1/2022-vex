@@ -7,8 +7,8 @@ using namespace okapi;
     std::shared_ptr<AsyncVelocityController<double, double>> flyCtrl =                                                 \
         AsyncVelControllerBuilder()                                                                                    \
             .withMotor({-FLY1_PORT, FLY2_PORT})                                                                        \
-            .withGains({0.001, 0.0, 0.001, 0.0})                                                                       \
-            .withVelMath(VelMathFactory::createPtr(gearsetToTPR(AbstractMotor::gearset::green)))                       \
+            .withGains({0.00004, 0.000, 0.007, 0.001})                                                                 \
+            .withVelMath(VelMathFactory::createPtr(imev5GreenTPR))                                                     \
             .build();
 
 #define setup_chassis                                                                                                  \
