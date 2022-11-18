@@ -6,7 +6,7 @@ using namespace okapi;
 void index_disc()
 {
     pros::ADIDigitalOut indexer(INDEX_PORT);
-    Motor intake(INTAKE_PORT);
+    Motor intake(-INTAKE_PORT);
 
     intake.moveVoltage(12000);
     indexer.set_value(false); // Fire

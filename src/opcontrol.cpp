@@ -31,7 +31,7 @@ void opcontrol()
 
     bool drive_disabled = false;
 
-    double flywheel_speed;
+    double flywheel_speed = 0;
 
     indexer.set_value(true);
 
@@ -50,8 +50,8 @@ void opcontrol()
         else if (ctrl.operator[](ControllerDigital::left).changedToPressed())
             flywheel_speed -= 20;
 
-        if (flyCtrl->getTarget() != flywheel_speed)
-            flyCtrl->setTarget(flywheel_speed);
+        // if (flyCtrl->getTarget() != flywheel_speed)
+        flyCtrl->setTarget(flywheel_speed);
 
         printf("%f\n", flyCtrl->getProcessValue());
 
@@ -69,13 +69,17 @@ void opcontrol()
 
         // Color Wheel
         if (ctrl.getDigital(ControllerDigital::Y))
-            colorwheel.moveVoltage(6000);
+            colorwheel.moveVelocity(200);
         else
             colorwheel.moveVoltage(0);
 
         // Expansion
         if (ctrl.getDigital(ControllerDigital::X) && ctrl.getDigital(ControllerDigital::B))
-            colorwheel.moveRelative(-0.5, 200);
+        {
+            colorwheel.moveVoltage(-12000);
+            pros::delay(100);
+            colorwheel.moveVoltage(0);
+        }
 
         // Drive
         /*
