@@ -1,7 +1,7 @@
 #include "autoSelect/selection.h"
-#include "chassis_setup.h"
 #include "main.h"
 #include "ports.h"
+#include "setup_macros.h"
 
 using namespace okapi;
 

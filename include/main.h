@@ -71,13 +71,10 @@ extern "C" {
     void competition_initialize(void);
     void opcontrol(void);
 
-    void flywheel_on_fn();
     void index_disc();
     void aim_horiz();
 
     int abs(int num);
-
-    extern float flywheel_speed;
 
 #ifdef __cplusplus
 }

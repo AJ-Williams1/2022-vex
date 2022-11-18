@@ -1,6 +1,7 @@
+#include "autoSelect/selection.h"
 #include "main.h"
 #include "ports.h"
-#include "autoSelect/selection.h"
+#include "setup_macros.h"
 
 using namespace okapi;
 
@@ -20,22 +21,17 @@ void initialize()
     pros::lcd::initialize();
 
     // Flywheels
+    /*
     Motor fly1(FLY1_PORT, true, AbstractMotor::gearset::green, AbstractMotor::encoderUnits::rotations,
                Logger::getDefaultLogger());
     Motor fly2(FLY2_PORT, false, AbstractMotor::gearset::green, AbstractMotor::encoderUnits::rotations,
                Logger::getDefaultLogger());
+    */
 
-    // Drive motors
-    std::shared_ptr<ChassisController> drive =
-        ChassisControllerBuilder()
-            .withMotors({WHEEL_FL_PORT, WHEEL_BL_PORT}, {WHEEL_FR_PORT, WHEEL_BR_PORT})
-            .withDimensions(AbstractMotor::gearset::green, {{4_in, 11.5_in}, imev5GreenTPR})
-            .withGains({0.001, 0, 0.0001}, // Distance controller gains
-                       {0.001, 0, 0.0001}, // Turn controller gains
-                       {0.001, 0, 0.0001}  // Angle controller gains (helps drive straight)
-                       )
-            .withOdometry()
-            .buildOdometry();
+
+    setup_chassis;
+
+    setup_flywheel;
 
     // Intake motor
     Motor intake(INTAKE_PORT, true, AbstractMotor::gearset::green, AbstractMotor::encoderUnits::rotations,
