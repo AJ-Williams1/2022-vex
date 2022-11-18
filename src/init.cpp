@@ -27,11 +27,12 @@ void initialize()
     Motor fly2(FLY2_PORT, false, AbstractMotor::gearset::green, AbstractMotor::encoderUnits::rotations,
                Logger::getDefaultLogger());
     */
-
+    pros::Motor fly1(FLY1_PORT, pros::E_MOTOR_GEARSET_18, true, pros::E_MOTOR_ENCODER_ROTATIONS);
+    pros::Motor fly2(FLY2_PORT, pros::E_MOTOR_GEARSET_18, false, pros::E_MOTOR_ENCODER_ROTATIONS);
 
     setup_chassis;
 
-    setup_flywheel;
+    // setup_flywheel;
 
     // Intake motor
     Motor intake(INTAKE_PORT, true, AbstractMotor::gearset::green, AbstractMotor::encoderUnits::rotations,

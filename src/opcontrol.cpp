@@ -12,7 +12,7 @@ void opcontrol()
 
     setup_chassis;
 
-    setup_flywheel;
+    // setup_flywheel;
 
     Motor intake(-INTAKE_PORT);
 
@@ -31,7 +31,7 @@ void opcontrol()
 
     bool drive_disabled = false;
 
-    double flywheel_speed = 0;
+    pros::Task flywheel_on(flywheel_on_fn);
 
     indexer.set_value(true);
 
@@ -51,9 +51,9 @@ void opcontrol()
             flywheel_speed -= 20;
 
         // if (flyCtrl->getTarget() != flywheel_speed)
-        flyCtrl->setTarget(flywheel_speed);
+        // flyCtrl->setTarget(flywheel_speed);
 
-        printf("%f\n", flyCtrl->getProcessValue());
+        // printf("%f\n", flyCtrl->getProcessValue());
 
         // Indexer
         if (ctrl.operator[](ControllerDigital::A).changedToPressed())
@@ -74,7 +74,8 @@ void opcontrol()
             colorwheel.moveVoltage(0);
 
         // Expansion
-        if (ctrl.getDigital(ControllerDigital::X) && ctrl.getDigital(ControllerDigital::B))
+        if (ctrl.getDigital(ControllerDigital::R1) && ctrl.getDigital(ControllerDigital::R2) &&
+            ctrl.getDigital(ControllerDigital::L1) && ctrl.getDigital(ControllerDigital::L2))
         {
             colorwheel.moveVoltage(-12000);
             pros::delay(100);
