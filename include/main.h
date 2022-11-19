@@ -71,6 +71,8 @@ extern "C" {
     void competition_initialize(void);
     void opcontrol(void);
 
+    void flywheel_on_fn();
+    extern float flywheel_speed;
     void index_disc();
     void aim_horiz();
 
