@@ -12,6 +12,7 @@ using namespace okapi;
 
 // Function declarations
 void color_quick_spin();
+void quick_shooter();
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -28,6 +29,7 @@ void color_quick_spin();
 void autonomous()
 {
     setup_chassis;
+
 }
 
 // Helper functions
@@ -39,4 +41,19 @@ void color_quick_spin()
     colorwheel.moveVoltage(12000);
     pros::delay(250);
     colorwheel.moveVoltage(0);
+}
+
+void quick_shooter()
+{
+    pros::Task flywheel_on(flywheel_on_fn);
+    flywheel_speed = 105;
+    index_disc();
+    pros::delay(150);
+    index_disc();
+    flywheel_speed = 0;
+
+
+
+
+
 }
