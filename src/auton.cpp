@@ -29,6 +29,9 @@ void quick_shooter();
 void autonomous()
 {
     setup_chassis;
+    color_quick_spin();
+    pros::delay(50);
+    quick_shooter();
 
 }
 
@@ -47,8 +50,9 @@ void quick_shooter()
 {
     pros::Task flywheel_on(flywheel_on_fn);
     flywheel_speed = 105;
+    pros::delay(150)
     index_disc();
-    pros::delay(150);
+    pros::delay(50);
     index_disc();
     flywheel_speed = 0;
 
