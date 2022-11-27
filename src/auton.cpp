@@ -55,9 +55,4 @@ void quick_shooter()
     pros::delay(50);
     index_disc();
     flywheel_speed = 0;
-
-
-
-
-
 }
