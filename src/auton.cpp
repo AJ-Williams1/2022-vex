@@ -28,31 +28,38 @@ void quick_shooter();
 
 void autonomous()
 {
-    setup_chassis;
     color_quick_spin();
     pros::delay(50);
     quick_shooter();
-
 }
 
 // Helper functions
 
 void color_quick_spin()
 {
+    setup_chassis;
     Motor colorwheel(COLORWHEEL_PORT);
 
-    colorwheel.moveVoltage(12000);
+    drive->getModel()->forward(50);
+    pros::delay(100);
+    drive->getModel()->stop();
+
+    colorwheel.moveVoltage(6000);
     pros::delay(250);
     colorwheel.moveVoltage(0);
 }
 
 void quick_shooter()
 {
+    setup_chassis;
     pros::Task flywheel_on(flywheel_on_fn);
     flywheel_speed = 105;
-    pros::delay(150)
+
+    drive->turnAngleAsync(-10_deg);
+
+    pros::delay(5000);
+
     index_disc();
-    pros::delay(50);
+    pros::delay(1000);
     index_disc();
-    flywheel_speed = 0;
 }
