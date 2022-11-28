@@ -41,7 +41,7 @@ void color_quick_spin()
     Motor colorwheel(COLORWHEEL_PORT);
 
     drive->getModel()->forward(50);
-    pros::delay(100);
+    pros::delay(200);
     drive->getModel()->stop();
 
     colorwheel.moveVoltage(6000);
@@ -52,13 +52,11 @@ void color_quick_spin()
 void quick_shooter()
 {
     setup_chassis;
+    Motor intake(-INTAKE_PORT);
     pros::Task flywheel_on(flywheel_on_fn);
-    flywheel_speed = 105;
+    flywheel_speed = 95;
 
-    //drive->turnAngleAsync(-10_deg);
-
-    pros::delay(5000);
-
+    pros::delay(8000);
     index_disc();
     pros::delay(1000);
     index_disc();

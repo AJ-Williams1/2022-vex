@@ -213,7 +213,7 @@ ELF_DEPS+=$(call GETALLOBJ,$(EXCLUDE_SRCDIRS))
 endif
 
 $(MONOLITH_BIN): $(MONOLITH_ELF) $(BINDIR)
-	sh ports-to-description.sh
+	# sh ports-to-description.sh
 	$(call test_output_2,Creating $@ for $(DEVICE) ,$(OBJCOPY) $< -O binary -R .hot_init $@,$(DONE_STRING))
 
 $(MONOLITH_ELF): $(ELF_DEPS) $(LIBRARIES)
@@ -233,7 +233,7 @@ $(COLD_ELF): $(COLD_LIBRARIES)
 	-$(VV)$(SIZETOOL) $(SIZEFLAGS) $@ $(SIZES_SED) $(SIZES_NUMFMT)
 
 $(HOT_BIN): $(HOT_ELF) $(COLD_BIN)
-	sh ports-to-description.sh
+	# sh ports-to-description.sh
 	$(call test_output_2,Creating $@ for $(DEVICE) ,$(OBJCOPY) $< -O binary $@,$(DONE_STRING))
 
 $(HOT_ELF): $(COLD_ELF) $(ELF_DEPS)
