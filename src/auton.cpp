@@ -55,7 +55,7 @@ void quick_shooter()
     pros::Task flywheel_on(flywheel_on_fn);
     flywheel_speed = 105;
 
-    drive->turnAngleAsync(-10_deg);
+    //drive->turnAngleAsync(-10_deg);
 
     pros::delay(5000);
 
