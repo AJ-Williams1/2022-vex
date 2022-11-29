@@ -39,6 +39,7 @@ void flywheel_on_fn()
     double fly1_vel = fly1.get_actual_velocity();
     double fly2_vel = fly2.get_actual_velocity();
 
+
     double fly1_vel_sum = 0;
     double fly2_vel_sum = 0;
 
@@ -46,7 +47,8 @@ void flywheel_on_fn()
     int fly2_voltage = 0;
     int ticks = 0;
 
-    float kP = 0.0018;
+    // float kP = 0.0018;
+    float kP = 0.006;
 
     // printf("ticks, fly1_vel, fly2_vel\n");
 
@@ -75,9 +77,10 @@ void flywheel_on_fn()
 
         fly1_error = target - fly1_vel;
         fly2_error = target - fly2_vel;
+        
 
-        fly1_voltage += round((fly1_error * 600.0 * kP));
-        fly2_voltage += round((fly2_error * 600.0 * kP));
+        fly1_voltage += round((fly1_error * 200.0 * kP));
+        fly2_voltage += round((fly2_error * 200.0 * kP));
 
         fly1.move_voltage(fly1_voltage);
         fly2.move_voltage(fly2_voltage);

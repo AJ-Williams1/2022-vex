@@ -26,10 +26,13 @@ void quick_shooter();
  * from where it left off.
  */
 
+
 void autonomous()
 {
+    pros::Task flywheel_on(flywheel_on_fn);
+    flywheel_speed = 100;
+    pros::delay(2000);
     color_quick_spin();
-    pros::delay(50);
     quick_shooter();
 }
 
@@ -51,13 +54,18 @@ void color_quick_spin()
 
 void quick_shooter()
 {
+    
     setup_chassis;
     Motor intake(-INTAKE_PORT);
-    pros::Task flywheel_on(flywheel_on_fn);
-    flywheel_speed = 95;
 
-    pros::delay(8000);
+    // pros::Task flywheel_on(flywheel_on_fn);
+    // flywheel_speed = 100;
+
+    pros::delay(4000);
     index_disc();
-    pros::delay(1000);
+    pros::delay(1500);
     index_disc();
+        
+
+
 }
