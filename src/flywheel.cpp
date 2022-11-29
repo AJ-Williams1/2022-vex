@@ -46,8 +46,7 @@ void flywheel_on_fn()
     int fly2_voltage = 0;
     int ticks = 0;
 
-    // float kP = 0.0018;
-    float kP = 0.06;
+    float kP = 0.0018;
 
     // printf("ticks, fly1_vel, fly2_vel\n");
 
