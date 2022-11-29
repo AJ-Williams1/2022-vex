@@ -30,7 +30,7 @@ void quick_shooter();
 void autonomous()
 {
     pros::Task flywheel_on(flywheel_on_fn);
-    flywheel_speed = 100;
+    flywheel_speed = 102;
     pros::delay(2000);
     color_quick_spin();
     quick_shooter();
@@ -57,14 +57,26 @@ void quick_shooter()
     
     setup_chassis;
     Motor intake(-INTAKE_PORT);
+    Motor fly1(FLY1_PORT);
 
     // pros::Task flywheel_on(flywheel_on_fn);
     // flywheel_speed = 100;
 
-    pros::delay(4000);
+    pros::delay(5000);
+    while ((((int)fly1.getActualVelocity()-flywheel_speed )> 5) or ((flywheel_speed- (int)fly1.getActualVelocity())> 5))  
+    {
+
+    }
     index_disc();
-    pros::delay(1500);
+    intake.moveVoltage(1200);
+    pros::delay(500);
+    //flywheel_speed = 95;
+    while ((((int)fly1.getActualVelocity()-flywheel_speed )> 5) or ((flywheel_speed- (int)fly1.getActualVelocity())> 5))  
+    {
+        
+    }
     index_disc();
+    intake.moveVoltage(0);
         
 
 
