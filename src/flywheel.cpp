@@ -34,7 +34,7 @@ void flyCalc(void*){
     // voltage/rpm correction *           Use task for this version of setFly
     // percent to miliVolts
     ctrl.set_text(0, 0,
-                      std::to_string(autonpct*200) + "  " +
+                      std::to_string((int)round(autonpct*200)-9) + "  " +
                           std::to_string((int)round((fly1.get_actual_velocity()+fly2.get_actual_velocity()) / 2)) + "     ");
 
 
@@ -42,13 +42,16 @@ void flyCalc(void*){
     double mV = 12000 * autonpct;       // 12000 is max mV          20 mV : 1 rpm
     double exMV = 0;                 // extra mV needed to be added to flywheel
     // canFire1 = false;
-    if (getActRPM() < targetRPM-7 || getActRPM() > targetRPM+7) {exMV = 10*(targetRPM - getActRPM()); canFire1 = false;}
+    if (getActRPM() < targetRPM-7 || getActRPM() > targetRPM+7) {exMV = 20*(targetRPM - getActRPM()); canFire1 = false;}
     else{canFire1 = true;}
 
     fly1.move_voltage(mV + exMV);
     fly2.move_voltage(mV + exMV);
   }
 }
+
+
+
 
 void flywheel_on_fn()
 {

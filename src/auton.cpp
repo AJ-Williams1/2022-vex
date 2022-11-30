@@ -65,7 +65,7 @@ void autonomous()
     // quick_shooter();
 
     pros::Task flywheel_on(flyCalc, nullptr);
-    setFlyAuto(58);
+    setFlyAuto(55);
     pros::delay(100);
     color_quick_spin();
     doubleAuto();
