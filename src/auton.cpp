@@ -54,6 +54,29 @@ void singleAuto(){       // shoot 1 in auton
     if(canFire()) index_disc();
   }
 }
+void drive_for_discs(){
+  setup_chassis;
+  Motor intake(-INTAKE_PORT);
+  intake.moveVoltage(-1200);
+  drive->getModel()->forward(-50);
+  pros::delay(100);
+  drive->getModel()->stop();
+
+  drive->turnAngle(-135_deg);
+  drive->getModel()->stop();
+
+  drive->moveDistance(14_in);
+  pros::delay(100);
+  drive->moveDistance(-1_in);
+  intake.moveVoltage(1200);
+  drive->getModel()->forward(5);
+  pros::delay(1000);
+  drive->getModel()->stop();
+
+
+
+
+}
 
 
 void autonomous()
@@ -69,6 +92,8 @@ void autonomous()
     pros::delay(100);
     color_quick_spin();
     doubleAuto();
+    pros::delay(100);
+    drive_for_discs();
 
     
 }
@@ -89,32 +114,33 @@ void color_quick_spin()
     colorwheel.moveVoltage(0);
 }
 
-void quick_shooter()
-{
+
+// void quick_shooter()
+// {
     
-    setup_chassis;
-    Motor intake(-INTAKE_PORT);
-    Motor fly1(FLY1_PORT);
+//     setup_chassis;
+//     Motor intake(-INTAKE_PORT);
+//     Motor fly1(FLY1_PORT);
 
-    // pros::Task flywheel_on(flywheel_on_fn);
-    // flywheel_speed = 100;
+//     // pros::Task flywheel_on(flywheel_on_fn);
+//     // flywheel_speed = 100;
 
-    pros::delay(5000);
-    while ((((int)fly1.getActualVelocity()-flywheel_speed )> 5) or ((flywheel_speed- (int)fly1.getActualVelocity())> 5))  
-    {
+//     pros::delay(5000);
+//     while ((((int)fly1.getActualVelocity()-flywheel_speed )> 5) or ((flywheel_speed- (int)fly1.getActualVelocity())> 5))  
+//     {
 
-    }
-    index_disc();
-    intake.moveVoltage(1200);
-    pros::delay(500);
-    //flywheel_speed = 95;
-    while ((((int)fly1.getActualVelocity()-flywheel_speed )> 5) or ((flywheel_speed- (int)fly1.getActualVelocity())> 5))  
-    {
+//     }
+//     index_disc();
+//     intake.moveVoltage(1200);
+//     pros::delay(500);
+//     //flywheel_speed = 95;
+//     while ((((int)fly1.getActualVelocity()-flywheel_speed )> 5) or ((flywheel_speed- (int)fly1.getActualVelocity())> 5))  
+//     {
         
-    }
-    index_disc();
-    intake.moveVoltage(0);
+//     }
+//     index_disc();
+//     intake.moveVoltage(0);
         
 
 
-}
+// }
