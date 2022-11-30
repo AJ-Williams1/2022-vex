@@ -42,7 +42,7 @@ void flyCalc(void*){
     double mV = 12000 * autonpct;       // 12000 is max mV          20 mV : 1 rpm
     double exMV = 0;                 // extra mV needed to be added to flywheel
     // canFire1 = false;
-    if (getActRPM() < targetRPM-6 || getActRPM() > targetRPM+6) {exMV = 20*(targetRPM - getActRPM()); canFire1 = false;}
+    if (getActRPM() < targetRPM-9 || getActRPM() > targetRPM+6) {exMV = 20*(targetRPM - getActRPM()); canFire1 = false;}
     else{canFire1 = true;}
 
     fly1.move_voltage(mV + exMV);

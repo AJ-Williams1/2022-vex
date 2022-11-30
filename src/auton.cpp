@@ -44,7 +44,7 @@ void doubleAuto(){       // shoot 2 in auton
      
     } 
     if(canFire()) index_disc();
-    pros::delay(100);
+    pros::delay(200);
   }
 }
 void singleAuto(){       // shoot 1 in auton
@@ -65,7 +65,7 @@ void autonomous()
     // quick_shooter();
 
     pros::Task flywheel_on(flyCalc, nullptr);
-    setFlyAuto(55);
+    setFlyAuto(56.5);
     pros::delay(100);
     color_quick_spin();
     doubleAuto();
