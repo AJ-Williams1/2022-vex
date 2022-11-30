@@ -61,11 +61,11 @@
             "-funwind-tables",
             "--std=gnu++17",
             "-o",
-            "bin/flywheel.cpp.o",
-            "src/flywheel.cpp"
+            "bin/opcontrol.cpp.o",
+            "src/opcontrol.cpp"
         ],
         "directory": "/Users/michaelsagerman/Documents/GitHub/2022-vex",
-        "file": "src/flywheel.cpp"
+        "file": "src/opcontrol.cpp"
     },
     {
         "arguments": [
@@ -95,11 +95,11 @@
             "-funwind-tables",
             "--std=gnu++17",
             "-o",
-            "bin/opcontrol.cpp.o",
-            "src/opcontrol.cpp"
+            "bin/init.cpp.o",
+            "src/init.cpp"
         ],
         "directory": "/Users/michaelsagerman/Documents/GitHub/2022-vex",
-        "file": "src/opcontrol.cpp"
+        "file": "src/init.cpp"
     },
     {
         "arguments": [
@@ -163,11 +163,11 @@
             "-funwind-tables",
             "--std=gnu++17",
             "-o",
-            "bin/init.cpp.o",
-            "src/init.cpp"
+            "bin/flywheel.cpp.o",
+            "src/flywheel.cpp"
         ],
         "directory": "/Users/michaelsagerman/Documents/GitHub/2022-vex",
-        "file": "src/init.cpp"
+        "file": "src/flywheel.cpp"
     },
     {
         "arguments": [

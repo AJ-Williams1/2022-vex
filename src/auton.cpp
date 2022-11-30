@@ -27,13 +27,50 @@ void quick_shooter();
  */
 
 
+void tripleAuto(){       // shoot 3 in auton
+  for (int i = 0; i < 3; i++){
+    while(!canFire()){
+    } 
+    if(canFire()){
+      index_disc();
+    }
+
+  }
+}
+
+void doubleAuto(){       // shoot 2 in auton
+  for (int i = 0; i < 2; i++){
+    while(!canFire()){
+     
+    } 
+    if(canFire()) index_disc();
+    pros::delay(100);
+  }
+}
+void singleAuto(){       // shoot 1 in auton
+  for (int i = 0; i < 1; i++){
+    while(!canFire()){
+    } 
+    if(canFire()) index_disc();
+  }
+}
+
+
 void autonomous()
 {
-    pros::Task flywheel_on(flywheel_on_fn);
-    flywheel_speed = 102;
-    pros::delay(2000);
+    // pros::Task flywheel_on(flywheel_on_fn);
+    // flywheel_speed = 102;
+    // pros::delay(2000);
     color_quick_spin();
-    quick_shooter();
+    // quick_shooter();
+
+    pros::Task flywheel_on(flyCalc, nullptr);
+    setFlyAuto(58);
+    pros::delay(100);
+    color_quick_spin();
+    doubleAuto();
+
+    
 }
 
 // Helper functions

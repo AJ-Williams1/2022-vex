@@ -31,24 +31,31 @@ void opcontrol()
 
     bool drive_disabled = false;
 
-    pros::Task flywheel_on(flywheel_on_fn);
+    pros::Task flywheel_on(flyCalc, nullptr);
+    
 
     indexer.set_value(true);
 
     while (true)
     {
         if (ctrl.operator[](ControllerDigital::L1).changedToPressed())
-            flywheel_speed = 80;
+            //flywheel_speed = 80;
+            flywheel_speed = 40;
         else if (ctrl.operator[](ControllerDigital::L2).changedToPressed())
+            //flywheel_speed = 0;
             flywheel_speed = 0;
         else if (ctrl.operator[](ControllerDigital::up).changedToPressed())
-            flywheel_speed += 5;
+            //flywheel_speed = 5;
+            flywheel_speed += 2.5;
         else if (ctrl.operator[](ControllerDigital::down).changedToPressed())
-            flywheel_speed -= 5;
+            //flywheel_speed = -5;
+            flywheel_speed -= 2.5;
         else if (ctrl.operator[](ControllerDigital::right).changedToPressed())
-            flywheel_speed += 20;
+            //flywheel_speed = +20;
+            flywheel_speed += 10;
         else if (ctrl.operator[](ControllerDigital::left).changedToPressed())
-            flywheel_speed -= 20;
+            //flywheel_speed = -20;
+            flywheel_speed -= 10;
 
         // if (flyCtrl->getTarget() != flywheel_speed)
         // flyCtrl->setTarget(flywheel_speed);
@@ -124,6 +131,7 @@ void opcontrol()
         drive->getModel()->left(l_drive_speed);
         drive->getModel()->right(r_drive_speed);
 
+        setFlyAuto(flywheel_speed);
         pros::delay(10);
     }
 }

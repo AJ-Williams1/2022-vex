@@ -5,12 +5,55 @@ using namespace pros;
 
 float flywheel_speed;
 
+pros::Motor fly1(FLY1_PORT);
+pros::Motor fly2(FLY2_PORT);
+Controller ctrl(E_CONTROLLER_MASTER);
+
+
+
+double autonpct = 0;
+
+bool canFire1 = false;
+
+bool canFire(){
+  return canFire1;
+}
+
+
+void setFlyAuto(double percent){
+  autonpct = percent/100;
+}
+
+
+double getActRPM(){
+    return (fly1.get_actual_velocity()+fly2.get_actual_velocity()) / 2;
+}
+
+void flyCalc(void*){
+  while (true){
+    // voltage/rpm correction *           Use task for this version of setFly
+    // percent to miliVolts
+    ctrl.set_text(0, 0,
+                      std::to_string(autonpct*200) + "  " +
+                          std::to_string((int)round((fly1.get_actual_velocity()+fly2.get_actual_velocity()) / 2)) + "     ");
+
+
+    double targetRPM = 200* autonpct; // 600 is max internal rpm :: total rpm of system is 6005/1 = 3000 rpm
+    double mV = 12000 * autonpct;       // 12000 is max mV          20 mV : 1 rpm
+    double exMV = 0;                 // extra mV needed to be added to flywheel
+    // canFire1 = false;
+    if (getActRPM() < targetRPM-7 || getActRPM() > targetRPM+7) {exMV = 10*(targetRPM - getActRPM()); canFire1 = false;}
+    else{canFire1 = true;}
+
+    fly1.move_voltage(mV + exMV);
+    fly2.move_voltage(mV + exMV);
+  }
+}
+
 void flywheel_on_fn()
 {
     printf("flywheel_on_fn called\n");
-    pros::Motor fly1(FLY1_PORT);
-    pros::Motor fly2(FLY2_PORT);
-    Controller ctrl(E_CONTROLLER_MASTER);
+    
 
     float target = 0;
 
@@ -48,7 +91,7 @@ void flywheel_on_fn()
     int ticks = 0;
 
     float kP = 0.005;
-
+    float kI=0;
     // printf("ticks, fly1_vel, fly2_vel\n");
 
     while (true)
@@ -80,6 +123,8 @@ void flywheel_on_fn()
 
         fly1_voltage += round((fly1_error * 200.0 * kP));
         fly2_voltage += round((fly2_error * 200.0 * kP));
+
+        
 
         fly1.move_voltage(fly1_voltage);
         fly2.move_voltage(fly2_voltage);
