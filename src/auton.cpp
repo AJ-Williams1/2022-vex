@@ -65,9 +65,9 @@ void drive_for_discs(){
   drive->driveToPoint({-2_ft, -2_ft});
   pros::delay(100);
   intake.moveVoltage(12000);
-  drive->setMaxVelocity(0.3*x);
+  drive->setMaxVelocity(0.4*x);
   drive->driveToPoint({-3.5_ft, -3.5_ft});
-  drive->turnToPoint({1_ft, -9_ft});
+  drive->turnToPoint({2_ft, -10_ft});
 
 
 
@@ -82,15 +82,15 @@ void autonomous()
     // pros::delay(2000);
     //color_quick_spin();
     // quick_shooter();
+    
 
-    // pros::Task flywheel_on(flyCalc, nullptr);
-    // setFlyAuto(56.5);
-    // pros::delay(100);
-    color_quick_spin();
-    //doubleAuto();
+    pros::Task flywheel_on(flyCalc, nullptr);
+    setFlyAuto(56.5);
     pros::delay(100);
+    color_quick_spin();
+    doubleAuto();
     drive_for_discs();
-    setFlyAuto(40);
+    setFlyAuto(50);
 
     tripleAuto();
 
@@ -112,6 +112,8 @@ void color_quick_spin()
     pros::delay(250);
     colorwheel.moveVoltage(0);
     drive->getModel()->forward(-50);
+    pros::delay(100);
+    drive->getModel()->stop();
 
 }
 

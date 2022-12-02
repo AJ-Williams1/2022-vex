@@ -16,6 +16,6 @@ using namespace okapi;
         ChassisControllerBuilder()                                                                                     \
             .withMotors({WHEEL_FL_PORT, WHEEL_BL_PORT}, {-WHEEL_FR_PORT, -WHEEL_BR_PORT})                              \
             .withDimensions(AbstractMotor::gearset::green, {{4_in, 11.5_in}, imev5GreenTPR})                           \
-            .withGains({0.00135, 0, 0.00001}, {0.00135, 0, 0.00001}, {0.001, 0, 0.0001})                                     \
+            .withGains({0.00095, 0.00045, 0.00000}, {0.00135, 0, 0.00001}, {0.001, 0, 0.0001})                                     \
             .withOdometry()                                                                                            \
             .buildOdometry();
