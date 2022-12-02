@@ -57,21 +57,17 @@ void singleAuto(){       // shoot 1 in auton
 void drive_for_discs(){
   setup_chassis;
   Motor intake(-INTAKE_PORT);
-  intake.moveVoltage(-1200);
-  drive->getModel()->forward(-50);
+  intake.moveVoltage(-12000);
+  double x = drive->getMaxVelocity();
+  drive->setMaxVelocity(0.8*x);
+  drive->turnToPoint({-2_ft, -2_ft});
   pros::delay(100);
-  drive->getModel()->stop();
-
-  drive->turnAngle(-135_deg);
-  drive->getModel()->stop();
-
-  drive->moveDistance(14_in);
+  drive->driveToPoint({-2_ft, -2_ft});
   pros::delay(100);
-  drive->moveDistance(-1_in);
-  intake.moveVoltage(1200);
-  drive->getModel()->forward(5);
-  pros::delay(1000);
-  drive->getModel()->stop();
+  intake.moveVoltage(12000);
+  drive->setMaxVelocity(0.3*x);
+  drive->driveToPoint({-3.5_ft, -3.5_ft});
+  drive->turnToPoint({1_ft, -9_ft});
 
 
 
@@ -87,13 +83,16 @@ void autonomous()
     //color_quick_spin();
     // quick_shooter();
 
-    pros::Task flywheel_on(flyCalc, nullptr);
-    setFlyAuto(56.5);
-    pros::delay(100);
+    // pros::Task flywheel_on(flyCalc, nullptr);
+    // setFlyAuto(56.5);
+    // pros::delay(100);
     color_quick_spin();
-    doubleAuto();
+    //doubleAuto();
     pros::delay(100);
     drive_for_discs();
+    setFlyAuto(40);
+
+    tripleAuto();
 
     
 }
@@ -112,6 +111,8 @@ void color_quick_spin()
     colorwheel.moveVoltage(6000);
     pros::delay(250);
     colorwheel.moveVoltage(0);
+    drive->getModel()->forward(-50);
+
 }
 
 
