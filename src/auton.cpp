@@ -67,6 +67,7 @@ void drive_for_discs(){
   intake.moveVoltage(12000);
   drive->setMaxVelocity(0.4*x);
   drive->driveToPoint({-3.5_ft, -3.5_ft});
+  drive->setMaxVelocity(0.8*x);
   drive->turnToPoint({2_ft, -10_ft});
 
 
