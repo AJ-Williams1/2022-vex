@@ -21,7 +21,6 @@ bool canFire(){
 
 
 void setFlyAuto(double percent){
-  percent+=5;
   autonpct = percent/100;
 }
 
@@ -35,11 +34,11 @@ void flyCalc(void*){
     // voltage/rpm correction *           Use task for this version of setFly
     // percent to miliVolts
     ctrl.set_text(0, 0,
-                      std::to_string((int)round(autonpct*200)-10) + "  " +
+                      std::to_string((int)round(autonpct*200)) + "  " +
                           std::to_string((int)round((fly1.get_actual_velocity()+fly2.get_actual_velocity()) / 2)) + "     ");
 
 
-    double targetRPM = (200* autonpct)-9; // 600 is max internal rpm :: total rpm of system is 6005/1 = 3000 rpm
+    double targetRPM = (200* autonpct); // 600 is max internal rpm :: total rpm of system is 6005/1 = 3000 rpm
     double mV = 12000 * autonpct;       // 12000 is max mV          20 mV : 1 rpm
     double exMV = 0;                 // extra mV needed to be added to flywheel
     // canFire1 = false;

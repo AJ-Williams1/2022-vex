@@ -116,6 +116,7 @@ void color_quick_spin()
     drive->getModel()->forward(-50);
     pros::delay(100);
     drive->getModel()->stop();
+    
 
 }
 
