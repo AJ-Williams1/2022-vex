@@ -62,6 +62,18 @@ void flywheel_on_fn()
 
 
     float pStart = 1;
+    float kP = 0.02;
+    float kI = 0.0001;
+    float kD = 0.000015;
+
+    float P = 0;
+    float I = 0;
+    float D = 0;
+
+    float prev_error;
+
+    float flySpeed=0;
+
     // printf("ticks, fly1_vel, fly2_vel\n");
 
     while (true)
