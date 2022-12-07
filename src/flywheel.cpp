@@ -3,15 +3,11 @@
 
 using namespace pros;
 
-float flywheel_speed;
-
 pros::Motor fly1(FLY1_PORT);
 pros::Motor fly2(FLY2_PORT);
 Controller ctrl(E_CONTROLLER_MASTER);
 
-
-
-double autonpct = 0;
+float flywheel_speed;
 
 bool canFire1 = false;
 
@@ -19,44 +15,13 @@ bool canFire(){
   return canFire1;
 }
 
-
-void setFlyAuto(double percent){
-  autonpct = percent/100;
-}
-
-
 double getActRPM(){
-    return (fly1.get_actual_velocity()+fly2.get_actual_velocity()) / 2;
-}
-
-void flyCalc(void*){
-  while (true){
-    // voltage/rpm correction *           Use task for this version of setFly
-    // percent to miliVolts
-    ctrl.set_text(0, 0,
-                      std::to_string((int)round(autonpct*200)) + "  " +
-                          std::to_string((int)round((fly1.get_actual_velocity()+fly2.get_actual_velocity()) / 2)) + "     ");
-
-
-    double targetRPM = (200* autonpct); // 600 is max internal rpm :: total rpm of system is 6005/1 = 3000 rpm
-    double mV = 12000 * autonpct;       // 12000 is max mV          20 mV : 1 rpm
-    double exMV = 0;                 // extra mV needed to be added to flywheel
-    // canFire1 = false;
-    if (getActRPM() < targetRPM-3 || getActRPM() > targetRPM+2) {exMV = 20*(targetRPM - getActRPM()); canFire1 = false;}
-    else{canFire1 = true;}
-
-    fly1.move_voltage(mV + exMV);
-    fly2.move_voltage(mV + exMV);
-  }
-}
-
-
-
+     return (fly1.get_actual_velocity()+fly2.get_actual_velocity()) / 2;
+ }
 
 void flywheel_on_fn()
 {
     printf("flywheel_on_fn called\n");
-    
 
     float target = 0;
 
@@ -81,6 +46,7 @@ void flywheel_on_fn()
 
     double fly1_error = 0;
     double fly2_error = 0;
+    double fly_error = 0;
 
     double fly1_vel = fly1.get_actual_velocity();
     double fly2_vel = fly2.get_actual_velocity();
@@ -93,8 +59,9 @@ void flywheel_on_fn()
     int fly2_voltage = 0;
     int ticks = 0;
 
-    float kP = 0.005;
-    float kI=0;
+
+
+    float pStart = 1;
     // printf("ticks, fly1_vel, fly2_vel\n");
 
     while (true)
@@ -106,6 +73,12 @@ void flywheel_on_fn()
         // Get & cap target value
         target = (flywheel_speed <= 200) ? flywheel_speed : 200;
 
+        fly1_vel = fly1.get_actual_velocity();
+        fly2_vel = fly2.get_actual_velocity();
+
+        fly1_vel_sum += fly1_vel;
+        fly2_vel_sum += fly2_vel;
+
         // printf("fly1_vel: %.3f,  fly1_volts: %i, fly1_realvolts: %i\nfly2_vel: %.3f, fly2_volts: %i, fly2_realvolts:
         // "
         // "%i\n\n",
@@ -114,20 +87,36 @@ void flywheel_on_fn()
         // ticks++;
         // printf("%i,%.3f,%.3f\n", ticks, fly1_vel, fly2_vel);
 
-        fly1_vel = fly1.get_actual_velocity();
-        fly2_vel = fly2.get_actual_velocity();
-
-        fly1_vel_sum += fly1_vel;
-        fly2_vel_sum += fly2_vel;
-
         fly1_error = target - fly1_vel;
         fly2_error = target - fly2_vel;
+
+        fly_error = (fly1_error +fly2_error)/2; // Find the total error
+
+        I += fly_error;
+
+
+        if (fly_error == 0)
+          I = 0;
+        if (abs(fly_error)>20)
+          I=0;
+
+        D = fly_error - prev_error;
+
+        prev_error = fly_error;
+
+
+
+        flySpeed = fly_error*kP + I*kI + kD*D;
         
 
-        fly1_voltage += round((fly1_error * 200.0 * kP));
-        fly2_voltage += round((fly2_error * 200.0 * kP));
+        fly1_voltage += round(((flySpeed/100)*12000.0));
+        fly2_voltage += round(((flySpeed/100)*12000.0));
 
-        
+        if (getActRPM() < flywheel_speed-3 || getActRPM() > flywheel_speed+3)
+          canFire1 = false;
+        else
+          canFire1 = true;
+
 
         fly1.move_voltage(fly1_voltage);
         fly2.move_voltage(fly2_voltage);
@@ -149,3 +138,167 @@ void flywheel_on_fn()
            //torque_vel_power, amps_volts_power, real_temp, real_torque);
     */
 }
+
+// #include "main.h"
+// #include "ports.h"
+
+// using namespace pros;
+
+// float flywheel_speed;
+
+// pros::Motor fly1(FLY1_PORT);
+// pros::Motor fly2(FLY2_PORT);
+// Controller ctrl(E_CONTROLLER_MASTER);
+
+
+
+// double autonpct = 0;
+
+// bool canFire1 = false;
+
+// bool canFire(){
+//   return canFire1;
+// }
+
+
+// void setFlyAuto(double percent){
+//   autonpct = percent/100;
+// }
+
+// void setFlySpeed(float flywheel_speed){
+//   // fly1.move((flywheel_speed/200)*127);
+//   // fly2.move((flywheel_speed/200)*127);
+//           ctrl.set_text(0, 0,
+//     std::to_string((int)round(flywheel_speed)) + "  " +
+//     std::to_string((int)round((fly1.get_actual_velocity() + fly2.get_actual_velocity()) / 2)) + "     ");
+
+//   fly1.move_voltage(12000);
+//   fly2.move_voltage(12000);
+// }
+
+
+
+// double getActRPM(){
+//     return (fly1.get_actual_velocity()+fly2.get_actual_velocity()) / 2;
+// }
+
+// void flyCalc(void*){
+//   while (true){
+//     // voltage/rpm correction *           Use task for this version of setFly
+//     // percent to miliVolts
+//     ctrl.set_text(0, 0,
+//                       std::to_string((int)round(autonpct*200)) + "  " +
+//                           std::to_string((int)round((fly1.get_actual_velocity()+fly2.get_actual_velocity()) / 2)) + "     ");
+
+
+//     double targetRPM = (200* autonpct); // 600 is max internal rpm :: total rpm of system is 6005/1 = 3000 rpm
+//     double mV = 12000 * autonpct;       // 12000 is max mV          20 mV : 1 rpm
+//     double exMV = 0;                 // extra mV needed to be added to flywheel
+//     // canFire1 = false;
+//     if (getActRPM() < targetRPM-5 || getActRPM() > targetRPM+5) {exMV = 20*(targetRPM - getActRPM()); canFire1 = false;}
+//     else{canFire1 = true;}
+
+//     fly1.move_voltage(mV + exMV);
+//     fly2.move_voltage(mV + exMV);
+//   }
+// }
+
+
+
+
+// void flywheel_on_fn()
+// {
+//     printf("flywheel_on_fn called\n");
+    
+
+//     float target = 0;
+
+//     /* Diagnostic Variables */
+//     int start_time = millis();
+//     double elapsed_time = 0;
+//     double real_vel = 0;
+//     int32_t real_voltage = 0;
+//     int32_t real_current = 0;
+//     double torque_vel_power = 0;
+//     double amps_volts_power = 0;
+//     double real_temp = 0;
+//     double real_torque = 0;
+
+//     /* Print headers for daignostic variables */
+//     // printf(
+//     //"time (ms),target (RPM),velocity (RPM),voltage (mV),current (mA),torque*vel power (W),current*volts power (W),"
+//     //"temperature (deg C),torque (Nm)\n");
+
+//     // Get the actual speed
+//     // (Casts the generic pointer to an int pointer that can be dereferenced, and then dereferences that pointer)
+
+//     double fly1_error = 0;
+//     double fly2_error = 0;
+
+//     double fly1_vel = fly1.get_actual_velocity();
+//     double fly2_vel = fly2.get_actual_velocity();
+
+
+//     double fly1_vel_sum = 0;
+//     double fly2_vel_sum = 0;
+
+//     int fly1_voltage = 0;
+//     int fly2_voltage = 0;
+//     int ticks = 0;
+
+//     float kP = 0.005;
+//     float kI=0;
+//     // printf("ticks, fly1_vel, fly2_vel\n");
+
+//     while (true)
+//     {
+//         ctrl.set_text(0, 0,
+//                       std::to_string((int)round(flywheel_speed)) + "  " +
+//                           std::to_string((int)round((fly1_vel + fly2_vel) / 2)) + "     ");
+
+//         // Get & cap target value
+//         target = (flywheel_speed <= 200) ? flywheel_speed : 200;
+
+//         // printf("fly1_vel: %.3f,  fly1_volts: %i, fly1_realvolts: %i\nfly2_vel: %.3f, fly2_volts: %i, fly2_realvolts:
+//         // "
+//         // "%i\n\n",
+//         // fly1_vel, fly1_voltage, fly1.get_voltage(), fly2_vel, fly2_voltage, fly2.get_voltage());
+
+//         // ticks++;
+//         // printf("%i,%.3f,%.3f\n", ticks, fly1_vel, fly2_vel);
+
+//         fly1_vel = fly1.get_actual_velocity();
+//         fly2_vel = fly2.get_actual_velocity();
+
+//         fly1_vel_sum += fly1_vel;
+//         fly2_vel_sum += fly2_vel;
+
+//         fly1_error = target - fly1_vel;
+//         fly2_error = target - fly2_vel;
+        
+
+//         fly1_voltage += round((fly1_error * 200.0 * kP));
+//         fly2_voltage += round((fly2_error * 200.0 * kP));
+
+        
+
+//         fly1.move_voltage(fly1_voltage);
+//         fly2.move_voltage(fly2_voltage);
+
+//         delay(50);
+//     }
+//     /*
+//     // Diagnostics
+//     elapsed_time = (millis() - start_time) / 1000.0;
+
+//     real_vel = (fly1.get_actual_velocity() - fly2.get_actual_velocity()) / 2;
+//     real_current = fly1.get_current_draw();
+//     torque_vel_power = fly1.get_power();
+//     amps_volts_power = (real_voltage * real_current) / 1000000.0;
+//     real_temp = fly1.get_temperature();
+//     real_torque = fly1.get_torque();
+
+//     // printf("%.2f, %.3f, %i, %i, %.3f, %.3f, %.3f, %.3f\n", elapsed_time, real_vel, real_voltage, real_current,
+//            //torque_vel_power, amps_volts_power, real_temp, real_torque);
+//     */
+// }

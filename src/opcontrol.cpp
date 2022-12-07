@@ -4,8 +4,8 @@
 
 using namespace okapi;
 
-pros::Motor fly1(FLY1_PORT);
-pros::Motor fly2(FLY2_PORT);
+// pros::Motor fly1(FLY1_PORT);
+// pros::Motor fly2(FLY2_PORT);
 
 
 /* In its own task when using FMS or Comp Switch, otherwise runs after init */
@@ -16,7 +16,7 @@ void opcontrol()
 
     setup_chassis;
 
-    setup_flywheel;
+    //setup_flywheel;
 
     Motor intake(-INTAKE_PORT);
 
@@ -35,7 +35,8 @@ void opcontrol()
 
     bool drive_disabled = false;
 
-    // pros::Task flywheel_on(flywheel_on_fn);
+    pros::Task flywheel_on(flywheel_on_fn);
+    //pros::Task flywheel_on(flyCalc, nullptr);
     
 
     indexer.set_value(true);
@@ -47,16 +48,16 @@ void opcontrol()
         else if (ctrl.operator[](ControllerDigital::L2).changedToPressed())
             flywheel_speed = 0;
         else if (ctrl.operator[](ControllerDigital::up).changedToPressed())
-            flywheel_speed = 5;
+            flywheel_speed += 5;
         else if (ctrl.operator[](ControllerDigital::down).changedToPressed())
-            flywheel_speed = -5;
+            flywheel_speed -= 5;
         else if (ctrl.operator[](ControllerDigital::right).changedToPressed())
-            flywheel_speed = +20;
+            flywheel_speed += 20;
         else if (ctrl.operator[](ControllerDigital::left).changedToPressed())
-            flywheel_speed = -20;
+            flywheel_speed -= 20;
 
-        if (flyCtrl->getTarget() != flywheel_speed)
-            flyCtrl->setTarget(flywheel_speed);
+        // if (flyCtrl->getTarget() != flywheel_speed)
+        //     flyCtrl->setTarget(flywheel_speed);
 
         // printf("%f\n", flyCtrl->getProcessValue());
 
@@ -129,9 +130,8 @@ void opcontrol()
         drive->getModel()->left(l_drive_speed);
         drive->getModel()->right(r_drive_speed);
 
-        // setFlyAuto(flywheel_speed);
-        fly1.move_voltage((flywheel_speed/200)*12000);
-        fly2.move_voltage((flywheel_speed/200)*12000);
+        //setFlyAuto(flywheel_speed);
+        // setFlySpeed(flywheel_speed);
         pros::delay(10);
     }
 }

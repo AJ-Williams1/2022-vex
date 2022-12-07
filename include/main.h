@@ -76,10 +76,11 @@ extern "C" {
     extern float flywheel_speed;
     void betterfly();
     bool canFire();
-    void setFlyAuto(double percent);
-    extern double autonpct;
+    // void setFlyAuto(double percent);
+    // extern double autonpct;
     void index_disc();
     void aim_horiz();
+    void setFlySpeed(float flywheel_speed);
 
     int abs(int num);
 
