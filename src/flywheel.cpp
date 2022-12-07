@@ -61,10 +61,10 @@ void flywheel_on_fn()
 
 
 
-    float pStart = 1;
-    float kP = 0.02;
+    float pStart = 0.05;
+    float kP = 0.01;
     float kI = 0.0001;
-    float kD = 0.000015;
+    float kD = 0.03;
 
     float P = 0;
     float I = 0;
@@ -102,29 +102,31 @@ void flywheel_on_fn()
         fly1_error = target - fly1_vel;
         fly2_error = target - fly2_vel;
 
+        printf("%f    %f\n", fly1_vel, fly2_vel);
+
         fly_error = (fly1_error +fly2_error)/2; // Find the total error
 
         I += fly_error;
 
 
-        if (fly_error == 0)
-          I = 0;
-        if (abs(fly_error)>20)
-          I=0;
 
         D = fly_error - prev_error;
 
         prev_error = fly_error;
-
-
-
-        flySpeed = fly_error*kP + I*kI + kD*D;
         
 
+        if (fly_error > 60)
+          flySpeed = fly_error*pStart + I*kI + kD*D;
+
+        else
+          flySpeed = fly_error*kP + I*kI + kD*D;
+
+        
         fly1_voltage += round(((flySpeed/100)*12000.0));
         fly2_voltage += round(((flySpeed/100)*12000.0));
 
         if (getActRPM() < flywheel_speed-3 || getActRPM() > flywheel_speed+3)
+
           canFire1 = false;
         else
           canFire1 = true;
