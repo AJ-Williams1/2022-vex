@@ -34,7 +34,7 @@ void tripleAuto(){       // shoot 3 in auton
     if(canFire()){
       index_disc();
     }
-    pros::delay(200);
+    pros::delay(400);
   }
 }
 
@@ -44,7 +44,7 @@ void doubleAuto(){       // shoot 2 in auton
      
     } 
     if(canFire()) index_disc();
-    pros::delay(200);
+    pros::delay(400);
   }
 }
 void singleAuto(){       // shoot 1 in auton
@@ -56,6 +56,7 @@ void singleAuto(){       // shoot 1 in auton
 }
 void drive_for_discs(){
   setup_chassis;
+  drive->setState({0_ft, 0_ft, 0_deg});
   Motor intake(-INTAKE_PORT);
   intake.moveVoltage(-12000);
   double x = drive->getMaxVelocity();
@@ -66,7 +67,7 @@ void drive_for_discs(){
   pros::delay(100);
   intake.moveVoltage(12000);
   drive->setMaxVelocity(0.4*x);
-  drive->driveToPoint({-3.2_ft, -3.2_ft});
+  drive->driveToPoint({-3.5_ft, -3.5_ft});
   drive->setMaxVelocity(0.8*x);
   drive->turnAngle(116.5_deg);
 
@@ -88,7 +89,7 @@ void autonomous()
 
     pros::Task flywheel_on(flyCalc, nullptr);
     setFlyAuto(56.5);
-    pros::delay(100);
+    pros::delay(200);
     color_quick_spin();
     doubleAuto();
     drive_for_discs();

@@ -21,11 +21,7 @@ bool canFire(){
 
 
 void setFlyAuto(double percent){
-  fly1.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-  fly2.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-  fly1.move(127*(percent/100));
-  fly2.move(127*(percent/100));
-
+  autonpct = percent/100;
 }
 
 
@@ -34,26 +30,24 @@ double getActRPM(){
 }
 
 void flyCalc(void*){
-  int FLY_CART = 200; // green
   while (true){
-    // voltage/rpm correct  // Simple P loop for flywheel INTERNAL RPM
+    // voltage/rpm correction *           Use task for this version of setFly
+    // percent to miliVolts
+    ctrl.set_text(0, 0,
+                      std::to_string((int)round(autonpct*200)-9) + "  " +
+                          std::to_string((int)round((fly1.get_actual_velocity()+fly2.get_actual_velocity()) / 2)) + "     ");
 
-    // if (flytoggle){
 
-      // * voltage/rpm correction *
-      // percent to miliVolts
+    double targetRPM = 200* autonpct; // 600 is max internal rpm :: total rpm of system is 6005/1 = 3000 rpm
+    double mV = 12000 * autonpct;       // 12000 is max mV          20 mV : 1 rpm
+    double exMV = 0;                 // extra mV needed to be added to flywheel
+    // canFire1 = false;
+    if (getActRPM() < targetRPM-9 || getActRPM() > targetRPM+6) {exMV = 20*(targetRPM - getActRPM()); canFire1 = false;}
+    else{canFire1 = true;}
 
-      double FLY_SPEED = abs(flywheel_speed);
-      double targetRPM = FLY_CART*(FLY_SPEED/100); // FLY_CART is max internal rpm :: total rpm of system is 600*5/1 = 3000 rpm
-      double mV = 12000*(FLY_SPEED/100);       // 12000 is max mV          20 mV : 1 rpm
-      double exMV = 0;                 // extra mV needed to be added to flywheel
-      
-      if (getActRPM() < targetRPM-5 || getActRPM() > targetRPM+5) {exMV = 10*(targetRPM - getActRPM());}
-      
-      fly1.move_voltage(mV + exMV);
-      fly2.move_voltage(mV + exMV);
-
-    // }
+    
+    fly1.move_voltage(mV + exMV);
+    fly2.move_voltage(mV + exMV);
   }
 }
 

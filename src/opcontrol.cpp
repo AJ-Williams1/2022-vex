@@ -40,7 +40,7 @@ void opcontrol()
     {
         if (ctrl.operator[](ControllerDigital::L1).changedToPressed())
             //flywheel_speed = 80;
-            flywheel_speed = 40;
+            flywheel_speed = 44.5;
         else if (ctrl.operator[](ControllerDigital::L2).changedToPressed())
             flywheel_speed = 0;
         else if (ctrl.operator[](ControllerDigital::up).changedToPressed())
