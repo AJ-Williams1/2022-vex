@@ -70,17 +70,17 @@ extern "C" {
     void disabled(void);
     void competition_initialize(void);
     void opcontrol(void);
+
     double getActRPM();
     void flyCalc(void*);
     void flywheel_on_fn();
     extern float flywheel_speed;
     void betterfly();
     bool canFire();
-    // void setFlyAuto(double percent);
-    // extern double autonpct;
+    void setFlyAuto(double percent);
+    extern double autonpct;
     void index_disc();
     void aim_horiz();
-    void setFlySpeed(float flywheel_speed);
 
     int abs(int num);
 

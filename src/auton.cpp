@@ -34,7 +34,7 @@ void tripleAuto(){       // shoot 3 in auton
     if(canFire()){
       index_disc();
     }
-    pros::delay(600);
+    pros::delay(200);
   }
 }
 
@@ -44,7 +44,7 @@ void doubleAuto(){       // shoot 2 in auton
      
     } 
     if(canFire()) index_disc();
-    pros::delay(600);
+    pros::delay(200);
   }
 }
 void singleAuto(){       // shoot 1 in auton
@@ -86,13 +86,13 @@ void autonomous()
     // quick_shooter();
     
 
-    pros::Task flywheel_on(flywheel_on_fn);
-    flywheel_speed = 105;
+    pros::Task flywheel_on(flyCalc, nullptr);
+    setFlyAuto(56.5);
     pros::delay(100);
     color_quick_spin();
     doubleAuto();
     drive_for_discs();
-    flywheel_speed = 90;
+    setFlyAuto(48);
     pros::delay(1000);
     tripleAuto();
 
@@ -116,31 +116,10 @@ void color_quick_spin()
     drive->getModel()->forward(-50);
     pros::delay(100);
     drive->getModel()->stop();
-    
 
 }
 
- void quick_shooter()
-{
-    
-    setup_chassis;
-    Motor intake(-INTAKE_PORT);
-    pros::Task flywheel_on(flywheel_on_fn);
-    flywheel_speed = 95;
 
-    pros::delay(8000);
-    // pros::Task flywheel_on(flywheel_on_fn);
-    // flywheel_speed = 100;
-
-    pros::delay(4000);
-    index_disc();
-    pros::delay(1000);
-    pros::delay(1500);
-    index_disc();
-        
-
-
-}
 // void quick_shooter()
 // {
     

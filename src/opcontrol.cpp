@@ -4,10 +4,6 @@
 
 using namespace okapi;
 
-// pros::Motor fly1(FLY1_PORT);
-// pros::Motor fly2(FLY2_PORT);
-
-
 /* In its own task when using FMS or Comp Switch, otherwise runs after init */
 void opcontrol()
 {
@@ -16,7 +12,7 @@ void opcontrol()
 
     setup_chassis;
 
-    //setup_flywheel;
+    // setup_flywheel;
 
     Motor intake(-INTAKE_PORT);
 
@@ -35,8 +31,7 @@ void opcontrol()
 
     bool drive_disabled = false;
 
-    pros::Task flywheel_on(flywheel_on_fn);
-    //pros::Task flywheel_on(flyCalc, nullptr);
+    pros::Task flywheel_on(flyCalc, nullptr);
     
 
     indexer.set_value(true);
@@ -44,20 +39,25 @@ void opcontrol()
     while (true)
     {
         if (ctrl.operator[](ControllerDigital::L1).changedToPressed())
-            flywheel_speed = 80;
+            //flywheel_speed = 80;
+            flywheel_speed = 40;
         else if (ctrl.operator[](ControllerDigital::L2).changedToPressed())
             flywheel_speed = 0;
         else if (ctrl.operator[](ControllerDigital::up).changedToPressed())
-            flywheel_speed += 5;
+            //flywheel_speed = 5;
+            flywheel_speed += 2.5;
         else if (ctrl.operator[](ControllerDigital::down).changedToPressed())
-            flywheel_speed -= 5;
+            //flywheel_speed = -5;
+            flywheel_speed -= 2.5;
         else if (ctrl.operator[](ControllerDigital::right).changedToPressed())
-            flywheel_speed += 20;
+            //flywheel_speed = +20;
+            flywheel_speed += 10;
         else if (ctrl.operator[](ControllerDigital::left).changedToPressed())
-            flywheel_speed -= 20;
+            //flywheel_speed = -20;
+            flywheel_speed -= 10;
 
         // if (flyCtrl->getTarget() != flywheel_speed)
-        //     flyCtrl->setTarget(flywheel_speed);
+        // flyCtrl->setTarget(flywheel_speed);
 
         // printf("%f\n", flyCtrl->getProcessValue());
 
@@ -130,8 +130,7 @@ void opcontrol()
         drive->getModel()->left(l_drive_speed);
         drive->getModel()->right(r_drive_speed);
 
-        //setFlyAuto(flywheel_speed);
-        // setFlySpeed(flywheel_speed);
+        setFlyAuto(flywheel_speed);
         pros::delay(10);
     }
 }
