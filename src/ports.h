@@ -1,5 +1,5 @@
 // MOTOR PORTS -----------
-#define WHEEL_FR_PORT 14
+#define WHEEL_FR_PORT 1
 #define WHEEL_FL_PORT 16
 #define WHEEL_BR_PORT 13
 #define WHEEL_BL_PORT 17
