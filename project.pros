@@ -298,13 +298,16 @@
         "version": "4.2.0",
         "supported_kernels": "^3.3.1",
         "target": "v5",
-        "metadata": { "origin": "pros-mainline" }
+        "metadata": {
+          "origin": "pros-mainline"
+        }
       }
     },
     "upload_options": {
       "description": "FR 14, FL 16, BR 13, BL 17, INTAKE 11, FLY1 19, FLY2 18, INDEX 8, COLORWHEEL 12, VISION 15",
-      "icon": "ufo"
+      "icon": "ufo",
+      "slot": 2
     },
-    "project_name": "aj-code"
+    "project_name": "aj-code-non-roller"
   }
 }
